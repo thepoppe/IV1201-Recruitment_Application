@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15.10
+    container_name: recruitment_db
+    environment:
+      POSTGRES_DB: recruitment
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./back-end
+    container_name: recruitment_backend
+    # Ensure backend starts after database
+    depends_on:
+      - db
+    environment:
+      # Provided these are read by your Express app to connect to DB
+      DB_HOST: db
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: recruitment
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: ./front-end
+    container_name: recruitment_frontend
+    # Ensure frontend starts after backend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
