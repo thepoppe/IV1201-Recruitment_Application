@@ -12,27 +12,45 @@ services:
       - "5432:5432"
 
   backend:
-    build:
-      context: ./back-end
+    build: ./back-end
     container_name: recruitment_backend
-    # Ensure backend starts after database
     depends_on:
       - db
     environment:
-      # Provided these are read by your Express app to connect to DB
       DB_HOST: db
       DB_USER: user
       DB_PASSWORD: password
       DB_NAME: recruitment
+      DB_PORT: 5432
+      NODE_ENV: development
     ports:
       - "4000:4000"
+    develop:
+      watch:
+        - action: sync
+          path: ./back-end
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
 
   frontend:
-    build:
-      context: ./front-end
+    build: ./front-end
     container_name: recruitment_frontend
-    # Ensure frontend starts after backend
     depends_on:
       - backend
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:4000
+      NODE_ENV: development
     ports:
       - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./front-end
+          target: /app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
