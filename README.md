@@ -52,6 +52,7 @@ docker compose up --build --watch
 > - Start **Backend (Express.js)** (`localhost:4000`)
 > - Start **Frontend (Next.js)** (`localhost:3000`)
 > - Enable **hot reloading** for both frontend and backend
+> - When the database starts, it will **automatically import `dump.sql`** if the database is empty.
 
 ---
 
