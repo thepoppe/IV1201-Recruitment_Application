@@ -1,0 +1,3 @@
+/**
+ * PersonModel - interface for sequlize
+ */
