@@ -1,11 +1,16 @@
-import Image from "next/image";
+import Button from "@/components/ui/Button";
 
 export default function Home() {
+  const handleClick = () => {
+    alert("Application form is not available yet");
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <p className="text-2xl font-bold text-center">
-        Welcome to Recruitment Application!
-      </p>
-    </div>
+    <main className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+      <h1 className="text-4xl font-bold text-center mb-6">
+        Welcome to Amusement Park recruitment application
+      </h1>
+      <Button>Apply now</Button>
+    </main>
   );
 }
