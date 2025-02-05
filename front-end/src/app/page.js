@@ -6,7 +6,7 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+    <main className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold text-center mb-6">
         Welcome to Amusement Park recruitment application
       </h1>
