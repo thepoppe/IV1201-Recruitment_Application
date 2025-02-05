@@ -2,41 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-
-const schema = Joi.object({
-  name: Joi.string().required().min(2).max(50).messages({
-    "string.empty": "First name is required",
-    "string.min": "First name must be at least 2 characters",
-    "string.max": "First name cannot exceed 50 characters",
-  }),
-  surname: Joi.string().required().min(2).max(50).messages({
-    "string.empty": "Last name is required",
-    "string.min": "Last name must be at least 2 characters",
-    "string.max": "Last name cannot exceed 50 characters",
-  }),
-  pnr: Joi.string()
-    .required()
-    .pattern(/^\d{8}-\d{4}$/)
-    .messages({
-      "string.empty": "Personal number is required",
-      "string.pattern.base": "Personal number must be in format YYYYMMDD-XXXX",
-    }),
-  email: Joi.string().required().email({ tlds: false }).messages({
-    "string.empty": "Email is required",
-    "string.email": "Please enter a valid email address",
-  }),
-  password: Joi.string()
-    .required()
-    .min(8)
-    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .messages({
-      "string.empty": "Password is required",
-      "string.min": "Password must be at least 8 characters",
-      "string.pattern.base":
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
-    }),
-});
+import { createAccountSchema } from "@/validations/createAccount";
 
 export default function CreateAccount() {
   const {
@@ -44,7 +10,7 @@ export default function CreateAccount() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: joiResolver(schema),
+    resolver: joiResolver(createAccountSchema),
     mode: "onBlur",
   });
 
