@@ -2,13 +2,18 @@
  * PersonModel - interface for sequlize
  */
 
-
-const {Sequelize, DataTypes, Model} = require('sequelize');
+const {DataTypes, Sequelize, Model} = require('sequelize');
+const { sequelize } = require("../config/databaseConfig");
 
 class Person extends Model {}
 
 Person.init(
     {
+        person_id: { 
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -31,7 +36,11 @@ Person.init(
         },
     },
         {
-        sequelize, //unsure if we need this or if its only for local
-        modelName: 'person',
+        sequelize,
+        modelName: 'Person',
+        tableName: "person",
+        timestamps: false,
     },
 );
+
+module.exports = Person;
