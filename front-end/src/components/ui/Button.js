@@ -1,8 +1,19 @@
-const Button = ({ children, className = "", ...props }) => {
+const Button = ({
+  children,
+  variant = "primary",
+  className = "",
+  ...props
+}) => {
+  const baseStyles = "px-4 py-2 transition-colors";
+  const variants = {
+    primary: "bg-blue-600 text-white rounded-md hover:bg-blue-700",
+    text: "text-gray-600 hover:text-gray-900",
+  };
+
   return (
     <button
       {...props}
-      className={`bg-gray-800 hover:bg-gray-700 active:bg-gray-900 text-white font-semibold py-2 px-4 rounded shadow-md focus:outline-none focus:ring-2 focus:ring-gray-600 transition duration-200 ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${className}`}
     >
       {children}
     </button>

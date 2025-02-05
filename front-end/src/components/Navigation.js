@@ -14,10 +14,10 @@ export default function Navigation() {
           </div>
           <div className="flex gap-4">
             {/* Login button */}
-            <Button>Login</Button>
+            <Button variant="text">Login</Button>
             {/* Create Account button */}
             <Link href="/create-account">
-              <Button>Create Account</Button>
+              <Button variant="primary">Create Account</Button>
             </Link>
           </div>
         </div>
