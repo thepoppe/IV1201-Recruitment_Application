@@ -14,7 +14,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Navigation />
-        {children}
+        <main className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 bg-gray-50">
+          {children}
+        </main>
       </body>
     </html>
   );

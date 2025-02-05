@@ -6,11 +6,11 @@ export default function Home() {
   };
 
   return (
-    <main className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="text-center">
       <h1 className="text-4xl font-bold text-center mb-6">
         Welcome to Amusement Park recruitment application
       </h1>
       <Button>Apply now</Button>
-    </main>
+    </div>
   );
 }
