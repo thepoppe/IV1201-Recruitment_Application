@@ -8,7 +8,7 @@ class PersonDTO {
         this.surname = json_person.surname || "";
         this.pnr = json_person.pnr || "";
         this.email = json_person.email || "";
-        this.username = json_person.username || "";
+        this.username = this.name+this.surname;
     }
 }
 
