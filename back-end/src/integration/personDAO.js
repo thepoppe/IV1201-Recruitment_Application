@@ -7,7 +7,7 @@
 
 /*file starts here*/
 const Person = require("../models/personModel")
-const personDTO = require("../models/personDTO")
+const PersonDTO = require("../models/personDTO")
 class PersonDAO {
 
     /**
