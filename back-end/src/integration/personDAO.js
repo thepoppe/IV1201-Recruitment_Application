@@ -15,7 +15,7 @@ class PersonDAO {
          return  new personDTO(user); 
     }
     async findPersonByID(id){
-        const user = await Person.findAll({
+        const user = await Person.findOne({
             where: {
               person_id:id
             }
