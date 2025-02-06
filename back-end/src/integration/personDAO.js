@@ -23,12 +23,12 @@ class PersonDAO {
         return new personDTO(user);
     }
     async findPersonByName(name){
-        const user = await Person.findAll({
+        const users = await Person.findAll({
             where: {
               name:name
             }
         })
-        return new personDTO(user);
+        return users.map(user => new personDTO(user));
     }
 }
 module.exports = PersonDAO
