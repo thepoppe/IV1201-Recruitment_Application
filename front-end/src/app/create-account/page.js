@@ -3,8 +3,14 @@
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { createAccountSchema } from "@/validations/createAccount";
+import { useState } from "react";
+import axios from "axios";
 
 export default function CreateAccount() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -14,9 +20,54 @@ export default function CreateAccount() {
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => {
-    console.log("Form submitted:", data);
+  const onSubmit = async (data) => {
+    try {
+      setIsSubmitting(true);
+      setError("");
+
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/create-account`,
+        data
+      );
+      setSuccess(true);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "An error occurred while creating your account"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (success) {
+    return (
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 text-center">
+        <div className="mb-4">
+          <svg
+            className="mx-auto h-12 w-12 text-green-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+        </div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Account Created Successfully!
+        </h2>
+        <p className="text-gray-600">
+          Thank you for joining our team. You can now log in to your account.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
@@ -28,6 +79,13 @@ export default function CreateAccount() {
           Join our team at the Amusement Park
         </p>
       </div>
+
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-sm text-red-600">{error}</p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
           <label
@@ -41,6 +99,7 @@ export default function CreateAccount() {
             {...register("name")}
             type="text"
             placeholder="John"
+            disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.name ? "border-red-500" : "border-gray-300"
             }`}
@@ -62,6 +121,7 @@ export default function CreateAccount() {
             {...register("surname")}
             type="text"
             placeholder="Doe"
+            disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.surname ? "border-red-500" : "border-gray-300"
             }`}
@@ -85,6 +145,7 @@ export default function CreateAccount() {
             {...register("pnr")}
             type="text"
             placeholder="YYYYMMDD-XXXX"
+            disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.pnr ? "border-red-500" : "border-gray-300"
             }`}
@@ -106,6 +167,7 @@ export default function CreateAccount() {
             {...register("email")}
             type="email"
             placeholder="john.doe@example.com"
+            disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.email ? "border-red-500" : "border-gray-300"
             }`}
@@ -127,6 +189,7 @@ export default function CreateAccount() {
             {...register("password")}
             type="password"
             placeholder="••••••••"
+            disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.password ? "border-red-500" : "border-gray-300"
             }`}
@@ -140,9 +203,10 @@ export default function CreateAccount() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 font-medium"
+          disabled={isSubmitting}
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Create Account
+          {isSubmitting ? "Creating Account..." : "Create Account"}
         </button>
       </form>
     </div>
