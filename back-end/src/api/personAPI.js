@@ -5,6 +5,7 @@
 
 const express = require('express');
 const Controller = require('../controller/controller');
+const { validateCreateAccount } = require('../utils/personValidator');
 
 const dummyUser = { name: "test", surname: "person", pnr: "12340102-6789", email: "a@finnsinte.ok", password: "passwordA2" };
 
@@ -18,12 +19,12 @@ class PersonAPI {
     initRoutes() {
         this.router.get("/get-user-id/:id", this.getAccountByID.bind(this));
         this.router.get("/get-user-name/:name", this.getAccountByName.bind(this));
-        this.router.post("/create-account", this.createAccount.bind(this));
+        this.router.post("/create-account", validateCreateAccount, this.createAccount.bind(this));
     }
 
     async createAccount(req,res) {
         try {
-            const person = await this.controller.createPerson(dummyUser);
+            const person = await this.controller.createPerson(req.body);
             res.json({ message: "Account created", person: person });
         } catch (error) {
             res.status(500).json({ error: error.message });
