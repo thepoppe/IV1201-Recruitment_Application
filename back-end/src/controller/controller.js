@@ -29,6 +29,10 @@ class Controller{
         if ( users.length > 0){
             throw new Error("Person with that pnr already exists");
         }
+        const email = await this.personDAO.findPersonByEmail(person.email)
+        if ( email.length > 0){
+            throw new Error("Person with that email already exists");
+        }
          
         const user = await this.personDAO.createPerson(person);
         return new personDTO(user);
