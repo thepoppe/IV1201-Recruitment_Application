@@ -53,6 +53,25 @@ class PersonDAO {
 
 
     /**
+    * Finds a Person by email and returns an array of PersonDTOs
+    * @param {string} email - The name of the person
+    * @returns {Promise<Array<PersonDTO>>} - The found array of PersonDTOs
+    * @throws {Error} - If the database query fails
+    */
+    async findPersonByEmail(email) {
+        try {
+            const users = await Person.findAll({
+                where: {
+                    email: email,
+                }
+            });
+            return users.length > 0 ? users.map(user => new PersonDTO(user)) : [];
+        } catch (error) {
+            console.error("Error finding person by name:", error);
+            throw error;
+        }
+    }
+    /**
     * Finds a Person by Name and returns an array of PersonDTOs
     * @param {string} name - The name of the person
     * @returns {Promise<Array<PersonDTO>>} - The found array of PersonDTOs
