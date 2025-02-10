@@ -26,14 +26,13 @@ export default function CreateAccount() {
       setError("");
 
       await axios.post(
-        `http://localhost:4000/api/person/create-account`,
+        `${process.env.NEXT_PUBLIC_API_URL}/person/create-account`,
         data
       );
       setSuccess(true);
     } catch (err) {
       setError(
-        err.response?.data?.message ||
-          err.message ||
+        err.response?.data?.error ||
           "An error occurred while creating your account"
       );
     } finally {
