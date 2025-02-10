@@ -9,6 +9,7 @@
 // require json
 const express = require("express");
 const personAPI = require("./api/personAPI");
+const cors = require("cors");
 
 class App {
     constructor(port) {
@@ -20,6 +21,11 @@ class App {
     }
 
     initmiddleware() {
+        const corsOptions = {
+            origin: "http://localhost:3000",
+            optionsSuccessStatus: 200,
+        };
+        this.app.use(cors(corsOptions));
         this.app.use(express.json());
     }
 
