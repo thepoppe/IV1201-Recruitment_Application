@@ -6,7 +6,7 @@ services:
     container_name: recruitment_db
     environment:
       POSTGRES_DB: recruitment
-      POSTGRES_USER: user
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
@@ -20,7 +20,7 @@ services:
       - db
     environment:
       DB_HOST: db
-      DB_USER: user
+      DB_USER: postgres
       DB_PASSWORD: password
       DB_NAME: recruitment
       DB_PORT: 5432
