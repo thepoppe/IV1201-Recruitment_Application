@@ -86,3 +86,18 @@ docker exec -it recruitment_db psql -U user -d recruitment -c "\dt"
 ```
 
 ---
+
+## Completely Reset and Rebuild Everything
+
+Remove Local node_modules and Lockfile in respective invironment (back-end or front-end)
+
+```sh
+rm -rf node_modules package-lock.json
+```
+
+Rebuild Docker Container
+
+```sh
+docker compose down --rmi all --volumes --remove-orphans
+docker compose up --build --watch
+```
