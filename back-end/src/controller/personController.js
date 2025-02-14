@@ -6,6 +6,7 @@ class PersonController {
     this.personDAO = new PersonDAO();
   }
 
+  // Create a new person
   async createPerson(data) {
     const existingPerson = await this.personDAO.findByEmail(data.email);
     if (existingPerson) {
@@ -14,6 +15,12 @@ class PersonController {
 
     const person = await this.personDAO.create(data);
     return new PersonDTO(person);
+  }
+
+  // Find all persons
+  async findAllPersons() {
+    const persons = await this.personDAO.findAll();
+    return persons.map((person) => new PersonDTO(person));
   }
 }
 

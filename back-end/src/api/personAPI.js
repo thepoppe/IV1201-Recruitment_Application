@@ -5,11 +5,12 @@ const { validateCreateAccount } = require("../utils/personValidator");
 
 class PersonApi extends RequestHandler {
   constructor() {
-    super("/api/person");
+    super("/person");
     this.controller = new PersonController();
   }
 
   registerRoutes() {
+    // Create account route with validation middleware
     this.router.post(
       "/create-account",
       validateCreateAccount,
@@ -22,6 +23,16 @@ class PersonApi extends RequestHandler {
         }
       }
     );
+
+    // Find all persons route
+    this.router.get("/all", async (req, res) => {
+      try {
+        const persons = await this.controller.findAllPersons();
+        this.sendSuccess(res, 200, persons);
+      } catch (error) {
+        this.sendError(res, 400, error.message);
+      }
+    });
   }
 }
 
