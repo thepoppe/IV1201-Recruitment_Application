@@ -1,10 +1,9 @@
-/**
- * Handles all Person Requests. 
- * Performs as the middle hand between Integration and Model
- */
 const PersonDAO = require("../integration/personDAO");
 const PersonDTO = require("../models/personDTO")
 
+/**
+ * Controller class for handling Requests
+ */
 class Controller{
     /**
      * Constructor for the Controller 

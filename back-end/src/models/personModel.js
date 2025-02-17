@@ -1,13 +1,16 @@
-/**
- * PersonModel - interface for sequlize
- */
-
 const {DataTypes, Model} = require('sequelize');
 const db = require("../config/database");
 const bcrypt = require("bcrypt");
 const sequelize = db.getSequelize();
+
+/**
+ * Person Model for the database
+ */
 class Person extends Model {}
 
+/**
+ * Initialize the Person model
+ */
 Person.init(
   {
     person_id: {
@@ -49,8 +52,8 @@ Person.init(
       type: DataTypes.STRING(64),
       allowNull: false,
       validate: {
-        len: [8, 64], // Length between 8-64 characters
-        is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/, // Matches Joi validation pattern for consistency
+        len: [8, 64],
+        is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
       },
     },
     role_id: {
@@ -71,6 +74,12 @@ Person.init(
     tableName: "person",
     timestamps: false,
     hooks: {
+      /**
+       * Hooks for the Person model that are called before creating a person
+       * Sets the role_id to 2 (user) and the username to the name and surname of the person
+       * Hashes the password before creating or updating a person
+       * @param {Person} person - The person object
+       */
       beforeCreate: async (person) => {
         person.role_id = 2;
         person.username = person.name + person.surname;
@@ -78,6 +87,13 @@ Person.init(
           person.password = await bcrypt.hash(person.password, 10);
         }
       },
+
+      /**
+       * Hooks for the Person model that are called before updating a person
+       * Sets the role_id to 2 (user) and the username to the name and surname of the person
+       * Hashes the password before creating or updating a person if updated
+       * @param {Person} person - The person object
+       */
       beforeUpdate: async (person) => {
         person.role_id = 2;
         person.username = person.name + person.surname;

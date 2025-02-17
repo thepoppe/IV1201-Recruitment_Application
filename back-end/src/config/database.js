@@ -1,6 +1,14 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
+/**
+ * Singleton class for handling the database connection
+ */
 class Database {
+  /**
+   * Constructor for the Database class
+   * Creates a new Sequelize instance if one does not already exist
+   * @returns {Database} - The Database instance
+   */
   constructor() {
     if (!Database.instance) {
       this.sequelize = new Sequelize(
@@ -26,6 +34,9 @@ class Database {
     return Database.instance;
   }
 
+  /**
+  * Initialize the database connection
+  */
   async init() {
     if (!this.initialized) {
       await this.sequelize.authenticate();
@@ -34,6 +45,10 @@ class Database {
     }
   }
 
+  /*
+  * Get the Sequelize singleton instance
+  * @returns {Sequelize} - The Sequelize instance
+  */
   getSequelize() {
     return this.sequelize;
   }

@@ -1,7 +1,6 @@
 /**
- * The class that is treturned to the user
+ * PersonDTO is a class that is used to represent a person object in a more readable way.
  */
-
 class PersonDTO {
     constructor(person) {
         this.id = person.person_id;
