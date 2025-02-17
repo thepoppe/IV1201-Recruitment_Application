@@ -39,6 +39,20 @@ class Controller{
     };
 
 
+    /**
+     * Finds all persons in the database
+     * @returns {Promise<PersonDTO[]>}
+     * @throws {Error} - If there are no persons in the database
+     */
+    async findAllPersons() {
+        const persons = await this.personDAO.findAll();
+        if (persons.length === 0){
+            throw new Error("There are no persons in the database");
+        }
+        return persons.map((person) => new PersonDTO(person));
+      }
+
+
 
 
 
