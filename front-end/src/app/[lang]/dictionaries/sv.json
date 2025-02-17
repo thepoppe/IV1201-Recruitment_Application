@@ -9,5 +9,34 @@
     "description": "Gå med i vårt team och bli en del av spänningen! Vi söker passionerade individer som vill skapa oförglömliga upplevelser för våra besökare. Ansök idag och starta din resa med oss!",
     "apply": "Ansök nu",
     "alert": "Ansökningsformuläret är inte tillgängligt än"
+  },
+  "create_account": {
+    "title": "Skapa ditt konto",
+    "subtitle": "Gå med i vårt team på nöjesparken",
+    "fields": {
+      "first_name": "Förnamn",
+      "last_name": "Efternamn",
+      "personal_number": "Personnummer",
+      "email": "E-post",
+      "password": "Lösenord"
+    },
+    "placeholders": {
+      "first_name": "Johan",
+      "last_name": "Svensson",
+      "personal_number": "ÅÅÅÅMMDD-XXXX",
+      "email": "johan.svensson@example.com",
+      "password": "••••••••"
+    },
+    "button": {
+      "submit": "Skapa konto",
+      "loading": "Skapar konto..."
+    },
+    "error": {
+      "generic": "Ett fel uppstod när ditt konto skulle skapas"
+    },
+    "success": {
+      "title": "Konto skapat framgångsrikt!",
+      "message": "Tack för att du gick med i vårt team. Du kan nu logga in på ditt konto."
+    }
   }
 }

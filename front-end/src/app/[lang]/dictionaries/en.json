@@ -9,5 +9,34 @@
     "description": "Join our team and be part of the excitement! We’re looking for passionate individuals to help create unforgettable experiences for our visitors. Apply today and start your journey with us!",
     "apply": "Apply now",
     "alert": "Application form is not available yet"
+  },
+  "create_account": {
+    "title": "Create Your Account",
+    "subtitle": "Join our team at the Amusement Park",
+    "fields": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "personal_number": "Personal Number",
+      "email": "Email",
+      "password": "Password"
+    },
+    "placeholders": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "personal_number": "YYYYMMDD-XXXX",
+      "email": "john.doe@example.com",
+      "password": "••••••••"
+    },
+    "button": {
+      "submit": "Create Account",
+      "loading": "Creating Account..."
+    },
+    "error": {
+      "generic": "An error occurred while creating your account"
+    },
+    "success": {
+      "title": "Account Created Successfully!",
+      "message": "Thank you for joining our team. You can now log in to your account."
+    }
   }
 }
