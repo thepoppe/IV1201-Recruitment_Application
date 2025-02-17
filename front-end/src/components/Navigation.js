@@ -1,23 +1,23 @@
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 
-export default function Navigation() {
+export default function Navigation({ t, lang }) {
   return (
     <nav className="border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0">
             {/* Text logo link to home */}
-            <Link href="/" className="text-xl font-bold">
-              Amusement Park
+            <Link href={`/${lang}`} className="text-xl font-bold">
+              {t.navigation.logo}
             </Link>
           </div>
           <div className="flex gap-4">
             {/* Login button */}
-            <Button variant="text">Login</Button>
+            <Button variant="text">{t.navigation.login}</Button>
             {/* Create Account button */}
-            <Link href="/create-account">
-              <Button variant="primary">Create Account</Button>
+            <Link href={`/${lang}/create-account`}>
+              <Button variant="primary">{t.navigation.create_account}</Button>
             </Link>
           </div>
         </div>
