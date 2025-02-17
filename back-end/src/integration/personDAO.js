@@ -9,6 +9,10 @@ class PersonDAO extends BaseDAO {
   async findByEmail(email) {
     return await this.model.findOne({ where: { email } });
   }
+
+  async findByPnr(pnr) {
+    return await this.model.findOne({ where: { pnr } });
+  }
 }
 
 module.exports = PersonDAO;
