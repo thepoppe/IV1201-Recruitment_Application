@@ -1,7 +1,11 @@
+"use client";
 import Link from "next/link";
+import { useLanguage } from "@/app/context/LanguageContext";
 import Button from "@/components/ui/Button";
 
-export default function Navigation({ t, lang }) {
+export default function Navigation() {
+  const { dict, lang } = useLanguage(); // Get `dict` and `lang` from context
+
   return (
     <nav className="border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -9,15 +13,17 @@ export default function Navigation({ t, lang }) {
           <div className="flex-shrink-0">
             {/* Text logo link to home */}
             <Link href={`/${lang}`} className="text-xl font-bold">
-              {t.navigation.logo}
+              {dict.navigation.logo}
             </Link>
           </div>
           <div className="flex gap-4">
             {/* Login button */}
-            <Button variant="text">{t.navigation.login}</Button>
+            <Button variant="text">{dict.navigation.login}</Button>
             {/* Create Account button */}
             <Link href={`/${lang}/create-account`}>
-              <Button variant="primary">{t.navigation.create_account}</Button>
+              <Button variant="primary">
+                {dict.navigation.create_account}
+              </Button>
             </Link>
           </div>
         </div>
