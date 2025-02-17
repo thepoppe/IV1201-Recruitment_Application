@@ -2,8 +2,7 @@
  * PersonModel - interface for sequlize
  */
 
-const {DataTypes, Sequelize, Model} = require('sequelize');
-const { sequelize } = require("../config/databaseConfig");
+const {DataTypes, Model} = require('sequelize');
 const db = require("../config/database");
 const bcrypt = require("bcrypt");
 const sequelize = db.getSequelize();
@@ -54,6 +53,14 @@ Person.init(
         is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/, // Matches Joi validation pattern for consistency
       },
     },
+    role_id: {
+      type: DataTypes.INTEGER,
+      defaultValue: 2,
+      allowNull: false,
+      validate: {
+        isInt: true,
+      },
+    },
     username: {
       type: DataTypes.STRING,
     },
@@ -65,12 +72,14 @@ Person.init(
     timestamps: false,
     hooks: {
       beforeCreate: async (person) => {
+        person.role_id = 2;
         person.username = person.name + person.surname;
         if (person.password) {
           person.password = await bcrypt.hash(person.password, 10);
         }
       },
       beforeUpdate: async (person) => {
+        person.role_id = 2;
         person.username = person.name + person.surname;
         if (person.changed("password")) {
           person.password = await bcrypt.hash(person.password, 10);
