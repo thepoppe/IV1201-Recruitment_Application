@@ -3,5 +3,11 @@
     "logo": "Amusement Park",
     "login": "Login",
     "create_account": "Create Account"
+  },
+  "home": {
+    "title": "Welcome to Amusement Park Recruitment!",
+    "description": "Join our team and be part of the excitement! We’re looking for passionate individuals to help create unforgettable experiences for our visitors. Apply today and start your journey with us!",
+    "apply": "Apply now",
+    "alert": "Application form is not available yet"
   }
 }

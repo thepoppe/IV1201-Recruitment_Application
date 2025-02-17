@@ -3,5 +3,11 @@
     "logo": "Nöjespark",
     "login": "Logga in",
     "create_account": "Skapa konto"
+  },
+  "home": {
+    "title": "Välkommen till Nöjesparkens rekrytering!",
+    "description": "Gå med i vårt team och bli en del av spänningen! Vi söker passionerade individer som vill skapa oförglömliga upplevelser för våra besökare. Ansök idag och starta din resa med oss!",
+    "apply": "Ansök nu",
+    "alert": "Ansökningsformuläret är inte tillgängligt än"
   }
 }
