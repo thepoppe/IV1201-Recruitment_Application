@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useLanguage } from "@/app/context/LanguageContext";
+import { useLanguage } from "@/context/LanguageContext";
 import Button from "@/components/ui/Button";
 
 export default function Navigation() {

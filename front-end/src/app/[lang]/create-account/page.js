@@ -5,7 +5,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { createAccountSchema } from "@/validations/createAccount";
 import { useState } from "react";
 import axios from "axios";
-import { useLanguage } from "@/app/context/LanguageContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CreateAccount() {
   const { dict } = useLanguage(); // Get translations

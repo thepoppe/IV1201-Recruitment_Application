@@ -2,7 +2,7 @@ import "../globals.css";
 import { Inter } from "next/font/google";
 import Navigation from "@/components/Navigation";
 import { getDictionary } from "./dictionaries";
-import { LanguageProvider } from "@/app/context/LanguageContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
