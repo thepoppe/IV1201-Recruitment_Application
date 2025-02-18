@@ -1,5 +1,5 @@
 "use client";
-import { useLanguage } from "@/context/LanguageContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 
 export default function Home() {
