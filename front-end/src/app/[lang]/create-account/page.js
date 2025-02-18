@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { createAccountSchema } from "@/validations/createAccount";
+import { createAccountSchema } from "@/validations/createAccountSchema";
 import { useState } from "react";
 import axios from "axios";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -18,7 +18,7 @@ export default function CreateAccount() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: joiResolver(createAccountSchema),
+    resolver: joiResolver(createAccountSchema(dict)),
     mode: "onBlur",
   });
 
