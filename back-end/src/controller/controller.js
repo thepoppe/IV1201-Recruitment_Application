@@ -1,5 +1,6 @@
 const PersonDAO = require("../integration/personDAO");
 const PersonDTO = require("../models/personDTO")
+const bcrypt = require("bcrypt");
 
 /**
  * Controller class for handling Requests
@@ -51,6 +52,28 @@ class Controller{
         }
         return persons.map((person) => new PersonDTO(person));
     };
+
+    /**
+     * Logs in the person if the email and password are correct
+     * @param {Object} req_params - The person object containing email and password
+     * @param {string} req_params.email - The email of the person
+     * @param {string} req_params.password - The password of the person
+     * @returns {Promise<PersonDTO>}
+     * @throws {Error} - If no user with that email
+     * @throws {Error} - If the password is incorrect
+     */
+    async login(req_params){
+        const user = await this.personDAO.findByEmail(req_params.email);
+        if (!user){
+            throw new Error("No user with that email");
+        }
+        const isPasswordValid = await bcrypt.compare(req_params.password, user.password);
+        if (!isPasswordValid) {
+              throw new Error("Incorrect password");
+        }
+
+        return new PersonDTO(user);
+    }
 }
 
 module.exports = Controller;
