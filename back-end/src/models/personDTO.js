@@ -1,15 +1,18 @@
 /**
- * The class that is treturned to the user
+ * PersonDTO is a class that is used to represent a person object to the client.
  */
-
 class PersonDTO {
-    constructor(json_person) {
-        this.id = json_person.person_id;
-        this.name = json_person.name; 
-        this.surname = json_person.surname;
-        this.pnr = json_person.pnr;
-        this.email = json_person.email;
-        this.username = json_person.username;
+    /**
+     * Constructor for the PersonDTO class.
+     * @param {Object} person - The person object to be represented.
+     */
+    constructor(person) {
+        this.id = person.person_id;
+        this.name = person.name; 
+        this.surname = person.surname;
+        this.pnr = person.pnr;
+        this.email = person.email;
+        this.username = person.username;
     }
 }
 
