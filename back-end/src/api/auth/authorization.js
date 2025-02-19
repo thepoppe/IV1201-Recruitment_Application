@@ -26,18 +26,20 @@ class AuthHandler{
      * Verifies the token
      * @param {string} token - The token to be verified
      * @returns {Object} - The decoded token
-     * @throws {Error} - If the token is invalid, malformed or expired
+     * @throws {TokenExpiredError} If the token is expired
+     * @throws {Error} - If the token is invalid, malformed
      */
     verifyToken(token){
         return jwt.verify(token, this.secret);
     }
 
     /**
-     * Middleware function that authenticates the user
+     * Middleware function that verifies the JWT, 
+     * and attaches the decoded token to the request object.
      * @param {Object} req - The request object
      * @param {Object} res - The response object
      * @param {Function} next - The next function
-     * @returns {Function} - The next function
+     * @returns {void} Calls next() if authentication is successful
      * @throws {Error} - If the token is not provided, expired or invalid
      */
     async authenticateUser(req, res, next){
@@ -61,10 +63,15 @@ class AuthHandler{
         }
     }
 
+
     /**
      * Middleware function that authorizes the user for person requests
+     * If the requested person's id does not match the id in the decoded token,
+     * it checks if the user has the 'recruiter' role.
      * @param {Object} controller - The controller object
-     * @returns {Function} - The middleware function
+     * @param {Object} req.params.id - The id of the requested person data
+     * @param {Object} req.decoded.id - The id in the decoded token
+     * @returns {Function} - The middleware function to check if a user is authorized
      * @throws {Error} - If the user is not authorized
      * @throws {Error} - If there is an error in the authorization process
      */
