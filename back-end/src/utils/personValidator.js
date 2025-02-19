@@ -42,6 +42,25 @@ const validateCreateAccount = (req, res, next) => {
   next();
 };
 
+const validateLogin = (req, res, next) => {
+  const loginSchema = Joi.object({
+    email: Joi.string().required().email({ tlds: false }).messages({
+      "string.empty": "Email is required",
+      "string.email": "Please enter a valid email address",
+    }),
+    password: Joi.string().required().messages({
+      "string.empty": "Password is required",
+    }),
+  });
+
+  const { error } = loginSchema.validate(req.body, { abortEarly: true });
+  if (error) {
+    return res.status(400).json({ errors: error.details.map(detail => detail.message) });
+  }
+  next();
+};
+
 module.exports = {
   validateCreateAccount,
+  validateLogin,
 };
