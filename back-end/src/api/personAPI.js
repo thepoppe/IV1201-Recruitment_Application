@@ -63,7 +63,7 @@ class PersonApi extends RequestHandler {
      * @param {Object} res - The response object
      */
     this.router.post("/login",
-      //validateLogin,
+      validateLogin,
       async (req, res) => {
       try {
         const person = await this.controller.login(req.body);
