@@ -60,7 +60,23 @@ const validateLogin = (req, res, next) => {
   next();
 };
 
+const validateGetUser = (req, res, next) => {
+  const getUserSchema = Joi.object({
+    id: Joi.number().required().messages({
+      "number.base": "ID must be a number",
+      "number.empty": "ID is required",
+    }),
+  });
+
+  const { error } = getUserSchema.validate(req.params, { abortEarly: true });
+  if (error) {
+    return res.status(400).json({ errors: error.details.map(detail => detail.message) });
+  }
+  next();
+};
+
 module.exports = {
   validateCreateAccount,
   validateLogin,
+  validateGetUser,
 };
