@@ -2,11 +2,13 @@
 
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { createAccountSchema } from "@/validations/createAccount";
+import { createAccountSchema } from "@/validations/createAccountSchema";
 import { useState } from "react";
 import axios from "axios";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function CreateAccount() {
+  const { dict } = useLanguage(); // Get translations
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -16,7 +18,7 @@ export default function CreateAccount() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: joiResolver(createAccountSchema),
+    resolver: joiResolver(createAccountSchema(dict)),
     mode: "onBlur",
   });
 
@@ -31,10 +33,7 @@ export default function CreateAccount() {
       );
       setSuccess(true);
     } catch (err) {
-      setError(
-        err.response?.data?.error ||
-          "An error occurred while creating your account"
-      );
+      setError(err.response?.data?.error || dict.create_account.error.generic);
     } finally {
       setIsSubmitting(false);
     }
@@ -59,11 +58,9 @@ export default function CreateAccount() {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Account Created Successfully!
+          {dict.create_account.success.title}
         </h2>
-        <p className="text-gray-600">
-          Thank you for joining our team. You can now log in to your account.
-        </p>
+        <p className="text-gray-600">{dict.create_account.success.message}</p>
       </div>
     );
   }
@@ -72,10 +69,10 @@ export default function CreateAccount() {
     <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-center text-gray-900">
-          Create Your Account
+          {dict.create_account.title}
         </h1>
         <p className="text-center text-gray-600 mt-2">
-          Join our team at the Amusement Park
+          {dict.create_account.subtitle}
         </p>
       </div>
 
@@ -86,18 +83,19 @@ export default function CreateAccount() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* First Name */}
         <div>
           <label
             htmlFor="name"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            First Name
+            {dict.create_account.fields.first_name}
           </label>
           <input
             id="name"
             {...register("name")}
             type="text"
-            placeholder="John"
+            placeholder={dict.create_account.placeholders.first_name}
             disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.name ? "border-red-500" : "border-gray-300"
@@ -108,18 +106,19 @@ export default function CreateAccount() {
           )}
         </div>
 
+        {/* Last Name */}
         <div>
           <label
             htmlFor="surname"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Last Name
+            {dict.create_account.fields.last_name}
           </label>
           <input
             id="surname"
             {...register("surname")}
             type="text"
-            placeholder="Doe"
+            placeholder={dict.create_account.placeholders.last_name}
             disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.surname ? "border-red-500" : "border-gray-300"
@@ -132,18 +131,19 @@ export default function CreateAccount() {
           )}
         </div>
 
+        {/* Personal Number */}
         <div>
           <label
             htmlFor="pnr"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Personal Number
+            {dict.create_account.fields.personal_number}
           </label>
           <input
             id="pnr"
             {...register("pnr")}
             type="text"
-            placeholder="YYYYMMDD-XXXX"
+            placeholder={dict.create_account.placeholders.personal_number}
             disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.pnr ? "border-red-500" : "border-gray-300"
@@ -154,18 +154,19 @@ export default function CreateAccount() {
           )}
         </div>
 
+        {/* Email */}
         <div>
           <label
             htmlFor="email"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Email
+            {dict.create_account.fields.email}
           </label>
           <input
             id="email"
             {...register("email")}
             type="email"
-            placeholder="john.doe@example.com"
+            placeholder={dict.create_account.placeholders.email}
             disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.email ? "border-red-500" : "border-gray-300"
@@ -176,18 +177,19 @@ export default function CreateAccount() {
           )}
         </div>
 
+        {/* Password */}
         <div>
           <label
             htmlFor="password"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Password
+            {dict.create_account.fields.password}
           </label>
           <input
             id="password"
             {...register("password")}
             type="password"
-            placeholder="••••••••"
+            placeholder={dict.create_account.placeholders.password}
             disabled={isSubmitting}
             className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
               errors.password ? "border-red-500" : "border-gray-300"
@@ -205,7 +207,9 @@ export default function CreateAccount() {
           disabled={isSubmitting}
           className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? "Creating Account..." : "Create Account"}
+          {isSubmitting
+            ? dict.create_account.button.loading
+            : dict.create_account.button.submit}
         </button>
       </form>
     </div>
