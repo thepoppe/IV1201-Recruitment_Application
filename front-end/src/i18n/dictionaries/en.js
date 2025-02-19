@@ -74,4 +74,37 @@ export default {
         "Password must contain at least one uppercase letter, one lowercase letter, and one number",
     },
   },
+
+  // Login Page
+  login: {
+    title: "Login to Your Account",
+    subtitle: "Enter your credentials to access your account",
+    fields: {
+      email: "Email",
+      password: "Password",
+    },
+    placeholders: {
+      email: "john.doe@example.com",
+      password: "••••••••",
+    },
+    button: {
+      submit: "Login",
+      loading: "Logging in...",
+    },
+    error: {
+      generic: "Invalid email or password",
+    },
+  },
+
+  // Login Validation
+  loginValidation: {
+    email: {
+      required: "Email is required",
+      invalid: "Please enter a valid email address",
+    },
+    password: {
+      required: "Password is required",
+      min: "Password must be at least 8 characters",
+    },
+  },
 };

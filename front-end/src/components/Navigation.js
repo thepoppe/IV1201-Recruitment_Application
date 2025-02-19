@@ -21,7 +21,9 @@ export default function Navigation() {
           </div>
           <div className="flex gap-4">
             {/* Login button */}
-            <Button variant="text">{dict.navigation.login}</Button>
+            <Link href={`/${lang}/login`}>
+              <Button variant="text">{dict.navigation.login}</Button>
+            </Link>
             {/* Create Account button */}
             <Link href={`/${lang}/create-account`}>
               <Button variant="primary">

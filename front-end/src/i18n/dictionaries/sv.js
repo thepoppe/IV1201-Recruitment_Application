@@ -74,4 +74,37 @@ export default {
         "Lösenordet måste innehålla minst en stor bokstav, en liten bokstav och en siffra",
     },
   },
+
+  // Login Page
+  login: {
+    title: "Logga in på ditt konto",
+    subtitle: "Ange dina uppgifter för att logga in",
+    fields: {
+      email: "E-post",
+      password: "Lösenord",
+    },
+    placeholders: {
+      email: "johan.svensson@example.com",
+      password: "••••••••",
+    },
+    button: {
+      submit: "Logga in",
+      loading: "Loggar in...",
+    },
+    error: {
+      generic: "Ogiltig e-post eller lösenord",
+    },
+  },
+
+  // Login Validation
+  loginValidation: {
+    email: {
+      required: "E-post är obligatoriskt",
+      invalid: "Vänligen ange en giltig e-postadress",
+    },
+    password: {
+      required: "Lösenord är obligatoriskt",
+      min: "Lösenord måste vara minst 8 tecken",
+    },
+  },
 };
