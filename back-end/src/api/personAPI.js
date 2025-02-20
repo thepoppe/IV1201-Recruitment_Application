@@ -28,16 +28,18 @@ class PersonApi extends RequestHandler {
      * async function that creates a new person
      * @param {Object} req - The request object
      * @param {Object} res - The response object
+     * @param {Function} next - The next function
      */ 
     this.router.post(
       "/create-account",
       validateCreateAccount,
-      async (req, res) => {
+      async (req, res, next) => {
         try {
           const person = await this.controller.createPerson(req.body);
           this.sendSuccess(res, 201, person);  
-        } catch (error) {
-          this.sendError(res, 400, error.message);
+        } 
+        catch (error) {
+          next(error);
         }
       }
     );
@@ -46,13 +48,16 @@ class PersonApi extends RequestHandler {
      * async function that finds all persons
      * @param {Object} req - The request object
      * @param {Object} res - The response object
+     * @param {Function} next - The next function
      */
-    this.router.get("/all", async (req, res) => {
+    this.router.get("/all", 
+      async (req, res, next) => {
       try { 
         const persons = await this.controller.findAllPersons();
         this.sendSuccess(res, 200, persons);
-      } catch (error) {
-        this.sendError(res, 400, error.message);
+      } 
+      catch (error) {
+        next(error);
       }
     });
 
@@ -61,16 +66,18 @@ class PersonApi extends RequestHandler {
      * async function to login a person
      * @param {Object} req - The request object
      * @param {Object} res - The response object
+     * @param {Function} next - The next function
      */
     this.router.post("/login",
       validateLogin,
-      async (req, res) => {
+      async (req, res, next) => {
       try {
         const person = await this.controller.login(req.body);
         const response = this.auth.addTokenToResponse(person);
         this.sendSuccess(res, 200, response);
-      } catch (error) {
-        this.sendError(res, 400, error.message);
+      } 
+      catch (error) {
+        next(error);
       }
     });
 
@@ -88,12 +95,13 @@ class PersonApi extends RequestHandler {
       validateGetUser,
       this.auth.authenticateUser.bind(this.auth),
       this.auth.authorizePersonRequest(this.controller),
-      async (req, res) => {
+      async (req, res, next) => {
       try {
         const person = await this.controller.getPersonData(req.params.id);
         this.sendSuccess(res, 200, person);
-      } catch (error) {
-        this.sendError(res, 400, error.message);
+      } 
+      catch (error) {
+        next(error);
       }
     });
   }
