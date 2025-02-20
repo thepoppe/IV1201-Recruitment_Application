@@ -1,5 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const ErrorCreator = require("../../utils/errorCreator")
 /**
  * Authorization Handler class for handling Authentication and Authorization
  */
@@ -45,11 +46,11 @@ class AuthHandler{
     async authenticateUser(req, res, next){
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-            return res.status(401).json({error: 'Token not provided'});
+            return next(ErrorCreator.createAuthenticationError("Token not provided in Authorization header"));
         }
         const token = authHeader.split(' ')[1];
         if (!token) {
-          return res.status(401).json({ error: 'Token not provided',  });
+            return next(ErrorCreator.createAuthenticationError("Token not provided or malformed request in Authorization header"));
         }
         try {
             req.decoded = this.verifyToken(token);
@@ -57,9 +58,9 @@ class AuthHandler{
         } 
         catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
-                return res.status(401).json({ error: 'Token expired' });
+                return next(ErrorCreator.createAuthenticationError("Token expired", error));
             }
-            return res.status(401).json({ error: error.message });
+            return next(ErrorCreator.createAuthenticationError("Authentication error", error));
         }
     }
 
@@ -81,11 +82,11 @@ class AuthHandler{
                 try {
                     const role = await controller.getUserRole(req.decoded.id);
                     if (role !== 'recruiter') {
-                    return res.status(401).json({ error: 'Unauthorized' });
+                        return next(ErrorCreator.createUnauthorizedError(`User[${req.decoded.id}, ${role}] tried accessing user [${req.params.id}]`));
                     }
                 } 
                 catch (error) {
-                    return res.status(500).json({ error: 'Authorization error' });
+                    return next(ErrorCreator.createInternalServerError("Authorization error", error));
                 }
             }
             return next();
@@ -110,8 +111,13 @@ class AuthHandler{
      * @returns {Object} - The token and person object
      */
     addTokenToResponse(person){
-        const token = this.generateToken(this.extractUserData(person));
-        return {token: token, person:person};
+        try{
+            const token = this.generateToken(this.extractUserData(person));
+            return {token: token, person:person};
+        }
+        catch(error){
+            throw ErrorCreator.createInternalServerError(`Failed to generate token when logging in user [${person.id}`, error);
+        }
     }
 }
 module.exports = AuthHandler;
