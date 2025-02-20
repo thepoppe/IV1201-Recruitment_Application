@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const ApiLoader = require("./src/api/apiLoader");
+const ErrorHandler = require("./src/api/errorHandler/errorHandler")
 const db = require("./src/config/database");
 
 /**
@@ -20,29 +21,31 @@ class Server {
    * Setup middleware for the Express app
    * - Parse JSON bodies
    * - Enable CORS
+   * 
    */
   setupMiddleware() {
     this.app.use(express.json());
-
-    // Enable CORS for requests from "http://localhost:3000"
     this.app.use(
       cors({
         origin: "http://localhost:3000",
-        methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
-        allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
       })
     );
-  }
 
+  }
+  
   /**
    * Start the server
    * @param {number} port - The port to listen on
-   */
-  async start(port = 4000) {
+  */
+ async start(port = 4000) {
     await db.init();
     const apiLoader = new ApiLoader();
     await apiLoader.loadApis(this.app);
 
+    this.app.use(ErrorHandler.handleError)
+   
     this.app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
