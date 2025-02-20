@@ -24,6 +24,8 @@ services:
       DB_PASSWORD: password
       DB_NAME: recruitment
       DB_PORT: 5432
+      JWT_SECRET: secret
+      JWT_EXPIRES_IN: 1h
       NODE_ENV: development
     ports:
       - "4000:4000"

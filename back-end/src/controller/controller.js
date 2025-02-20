@@ -74,6 +74,27 @@ class Controller{
 
         return new PersonDTO(user);
     }
+
+    /**
+     * Finds a person by their id
+     * @param {number} person_id - The id of the person
+     * @returns {Promise<PersonDTO>}
+     */
+    async getPersonData(person_id){
+        const user = await this.personDAO.findById(person_id);
+        return new PersonDTO(user);
+    }
+
+    /**
+     * Finds the role of the user
+     * @param {number} person_id - The id of the person
+     * @returns {Promise<string>}
+     */
+    async getUserRole(person_id){
+        const user = await this.personDAO.findById(person_id);
+        const role = await this.personDAO.findRoleById(user.role_id);
+        return role.name;
+    }
 }
 
 module.exports = Controller;

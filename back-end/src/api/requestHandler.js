@@ -1,5 +1,5 @@
 const express = require("express");
-
+const AuthHandler = require("./auth/authorization");
 /**
  * RequestHandler class for handling Requests
  */
@@ -11,6 +11,7 @@ class RequestHandler {
   constructor(basePath) {
     this.router = express.Router();
     this.basePath = basePath;
+    this.auth = new AuthHandler();
   }
 
   /**
