@@ -1,5 +1,6 @@
 const express = require("express");
 const AuthHandler = require("./auth/authorization");
+const GenericAppError = require("../utils/genericAppError");
 /**
  * RequestHandler class for handling Requests
  */
@@ -42,11 +43,13 @@ class RequestHandler {
    *  @param {number} status - The status code
    *  @param {string} message - The error message
    */
-  sendError(res, status, message) {
-    res.status(status).json({
-      success: false,
-      error: message,
-    });
+  sendError(res, error) {
+    if (error instanceof GenericAppError){
+      res.status(error.status).json({success: false, error: error.userMessage});
+    }
+    else{
+      res.status(500).json({success: false, error:"An unexpected error occurred. Please try again later."});
+    }
   }
 }
 
