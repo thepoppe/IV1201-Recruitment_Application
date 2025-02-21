@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const ErrorCreator = require("../../utils/errorCreator")
+const GenericAppError = require("../../utils/genericAppError")
 /**
  * Authorization Handler class for handling Authentication and Authorization
  */
@@ -41,16 +41,16 @@ class AuthHandler{
      * @param {Object} res - The response object
      * @param {Function} next - The next function
      * @returns {void} Calls next() if authentication is successful
-     * @throws {Error} - If the token is not provided, expired or invalid
+     * @throws {GenericAppError} - If the token is not provided, expired or invalid
      */
     async authenticateUser(req, res, next){
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-            return next(ErrorCreator.createAuthenticationError("Token not provided in Authorization header"));
+            return next(GenericAppError.createAuthenticationError("Token not provided in Authorization header"));
         }
         const token = authHeader.split(' ')[1];
         if (!token) {
-            return next(ErrorCreator.createAuthenticationError("Token not provided or malformed request in Authorization header"));
+            return next(GenericAppError.createAuthenticationError("Token not provided or malformed request in Authorization header"));
         }
         try {
             req.decoded = this.verifyToken(token);
@@ -58,9 +58,9 @@ class AuthHandler{
         } 
         catch (error) {
             if (error instanceof jwt.TokenExpiredError) {
-                return next(ErrorCreator.createAuthenticationError("Token expired", error));
+                return next(GenericAppError.createAuthenticationError("Token expired", error));
             }
-            return next(ErrorCreator.createAuthenticationError("Authentication error", error));
+            return next(GenericAppError.createAuthenticationError("Authentication error", error));
         }
     }
 
@@ -73,8 +73,8 @@ class AuthHandler{
      * @param {Object} req.params.id - The id of the requested person data
      * @param {Object} req.decoded.id - The id in the decoded token
      * @returns {Function} - The middleware function to check if a user is authorized
-     * @throws {Error} - If the user is not authorized
-     * @throws {Error} - If there is an error in the authorization process
+     * @throws {GenericAppError} - If the user is not authorized
+     * @throws {GenericAppError} - If there is an error in the authorization process
      */
     authorizePersonRequest(controller) {
         return async (req, res, next) => {
@@ -82,11 +82,11 @@ class AuthHandler{
                 try {
                     const role = await controller.getUserRole(req.decoded.id);
                     if (role !== 'recruiter') {
-                        return next(ErrorCreator.createUnauthorizedError(`User[${req.decoded.id}, ${role}] tried accessing user [${req.params.id}]`));
+                        return next(GenericAppError.createUnauthorizedError(`User[${req.decoded.id}, ${role}] tried accessing user [${req.params.id}]`));
                     }
                 } 
                 catch (error) {
-                    return next(ErrorCreator.createInternalServerError("Authorization error", error));
+                    return next(GenericAppError.createInternalServerError("Authorization error", error));
                 }
             }
             return next();
@@ -109,6 +109,7 @@ class AuthHandler{
      * Adds the token to the response when login is successful
      * @param {Object} person - The person object
      * @returns {Object} - The token and person object
+     * @
      */
     addTokenToResponse(person){
         try{
@@ -116,7 +117,7 @@ class AuthHandler{
             return {token: token, person:person};
         }
         catch(error){
-            throw ErrorCreator.createInternalServerError(`Failed to generate token when logging in user [${person.id}`, error);
+            throw GenericAppError.createInternalServerError(`Failed to generate token when logging in user [${person.id}`, error);
         }
     }
 }

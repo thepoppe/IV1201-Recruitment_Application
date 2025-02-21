@@ -1,6 +1,6 @@
 const express = require("express");
 const AuthHandler = require("./auth/authorization");
-const ErrorCreator = require("../utils/errorCreator");
+const GenericAppError = require("../utils/genericAppError");
 /**
  * RequestHandler class for handling Requests
  */
@@ -44,7 +44,7 @@ class RequestHandler {
    *  @param {string} message - The error message
    */
   sendError(res, error) {
-    if (error instanceof ErrorCreator){
+    if (error instanceof GenericAppError){
       res.status(error.status).json({success: false, error: error.userMessage});
     }
     else{

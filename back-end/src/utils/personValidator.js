@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const ErrorCreator = require("./errorCreator")
+const GenericAppError = require("./genericAppError")
 
 const createAccountSchema = Joi.object({
   name: Joi.string().required().min(2).max(50).messages({
@@ -53,7 +53,7 @@ const getUserSchema = Joi.object({
 const validateCreateAccount = (req, res, next) => {
   const { error } = createAccountSchema.validate(req.body, { abortEarly: true });
   if (error) {
-    return next(ErrorCreator.createValidationError(`Validation error:${error.details.map(detail => detail.message)}`, error));
+    return next(GenericAppError.createValidationError(`Validation error:${error.details.map(detail => detail.message)}`, error));
   }
   next();
 };
@@ -61,7 +61,7 @@ const validateCreateAccount = (req, res, next) => {
 const validateLogin = (req, res, next) => {
   const { error } = loginSchema.validate(req.body, { abortEarly: true });
   if (error) {
-    return next(ErrorCreator.createValidationError(`Validation error:${error.details.map(detail => detail.message)}`, error));
+    return next(GenericAppError.createValidationError(`Validation error:${error.details.map(detail => detail.message)}`, error));
   }
   next();
 };
@@ -69,7 +69,7 @@ const validateLogin = (req, res, next) => {
 const validateGetUser = (req, res, next) => {
   const { error } = getUserSchema.validate(req.params, { abortEarly: true });
   if (error) {
-    return next(ErrorCreator.createValidationError(`Validation error:${error.details.map(detail => detail.message)}`, error));
+    return next(GenericAppError.createValidationError(`Validation error:${error.details.map(detail => detail.message)}`, error));
   }
   next();
 };
