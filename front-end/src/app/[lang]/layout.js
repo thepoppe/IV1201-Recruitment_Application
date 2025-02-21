@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Navigation from "@/components/Navigation";
 import { getDictionary } from "@/i18n/dictionaries";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { UserProvider } from "@/contexts/UserContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,17 +18,19 @@ export default async function RootLayout({ children, params }) {
   return (
     <html lang={lang}>
       <body className={inter.className}>
-        <LanguageProvider dict={dict} lang={lang}>
-          {/* Fixed Navigation */}
-          <div className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
-            <Navigation />
-          </div>
+        <UserProvider>
+          <LanguageProvider dict={dict} lang={lang}>
+            {/* Fixed Navigation */}
+            <div className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+              <Navigation />
+            </div>
 
-          {/* Main Content */}
-          <main className="pt-[5rem] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-            {children}
-          </main>
-        </LanguageProvider>
+            {/* Main Content */}
+            <main className="pt-[5rem] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
+              {children}
+            </main>
+          </LanguageProvider>
+        </UserProvider>
       </body>
     </html>
   );
