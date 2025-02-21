@@ -108,6 +108,7 @@ class PersonApi extends RequestHandler {
         catch (error) {
           next(error);
         }
+      }
     );
 
     /**
