@@ -14,14 +14,10 @@ export function UserProvider({ children }) {
   const router = useRouter();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
     const storedTokenCookie = Cookies.get("token");
     if (storedTokenCookie) {
-      console.log("Setting token from cookie", storedTokenCookie);
-    }
-    if (storedToken) {
-      setToken(storedToken);
-      fetchUser(storedToken);
+      setToken(storedTokenCookie);
+      fetchUser(storedTokenCookie);
     } else {
       setLoading(false);
     }
@@ -55,8 +51,10 @@ export function UserProvider({ children }) {
       if (response.data.success) {
         setUser(response.data.data.person);
         setToken(response.data.data.token);
-        Cookies.set("token", response.data.data.token);
-        localStorage.setItem("token", response.data.data.token);
+        Cookies.set("token", response.data.data.token, {
+          secure: true,
+          sameSite: "strict",
+        });
         router.push("/");
       } else {
         setError("Invalid credentials");
@@ -72,7 +70,6 @@ export function UserProvider({ children }) {
     setUser(null);
     setToken(null);
     Cookies.remove("token");
-    localStorage.removeItem("token");
     router.push("/");
   };
 
