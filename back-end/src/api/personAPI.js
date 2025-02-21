@@ -1,6 +1,10 @@
 const RequestHandler = require("./requestHandler");
 const Controller = require("../controller/controller");
-const { validateCreateAccount, validateLogin, validateGetUser} = require("../utils/personValidator");
+const {
+  validateCreateAccount,
+  validateLogin,
+  validateGetUser,
+} = require("../utils/personValidator");
 
 /**
  * Person API class for handling Person requests
@@ -18,16 +22,16 @@ class PersonApi extends RequestHandler {
 
   /**
    * Registers the routes for the Person API
-   * 
+   *
    * POST /person/create-account - Creates a new person
    * GET /person/all - Finds all persons
    */
   registerRoutes() {
-  
     /**
      * async function that creates a new person
      * @param {Object} req - The request object
      * @param {Object} res - The response object
+
      * @param {Function} next - The next function
      */ 
     this.router.post(
@@ -50,6 +54,7 @@ class PersonApi extends RequestHandler {
      * @param {Object} res - The response object
      * @param {Function} next - The next function
      */
+
     this.router.get("/all", 
       async (req, res, next) => {
       try { 
@@ -61,13 +66,13 @@ class PersonApi extends RequestHandler {
       }
     });
 
-
     /**
      * async function to login a person
      * @param {Object} req - The request object
      * @param {Object} res - The response object
      * @param {Function} next - The next function
      */
+
     this.router.post("/login",
       validateLogin,
       async (req, res, next) => {
@@ -81,7 +86,6 @@ class PersonApi extends RequestHandler {
       }
     });
 
-
     /**
      * async function to get a persons data by id if authenticated and authorized
      * @param {Object} req - The request object
@@ -89,21 +93,44 @@ class PersonApi extends RequestHandler {
      * @param {Object} req.decoded - The decoded token if authentication is valid
      * @param {Object} res - The response object
      * @param {Function} next - The next function
-     * 
+     *
      */
-    this.router.get("/id/:id", 
+    this.router.get(
+      "/id/:id",
       validateGetUser,
       this.auth.authenticateUser.bind(this.auth),
       this.auth.authorizePersonRequest(this.controller),
       async (req, res, next) => {
-      try {
-        const person = await this.controller.getPersonData(req.params.id);
-        this.sendSuccess(res, 200, person);
-      } 
-      catch (error) {
-        next(error);
+        try {
+          const person = await this.controller.getPersonData(req.params.id);
+          this.sendSuccess(res, 200, person);
+        } 
+        catch (error) {
+          next(error);
+        }
+    );
+
+    /**
+     * async function to get the data of the authenticated person
+     * it uses the token to get the id of the person, not sending the id in the request
+     * @param {Object} req - The request object
+     * @param {Object} req.decoded - The decoded token if authentication is valid
+     * @param {Object} res - The response object
+     * @param {Function} next - The next function
+     */
+    this.router.get(
+      "/me",
+      this.auth.authenticateUser.bind(this.auth),
+      async (req, res, next) => {
+        try {
+          const person = await this.controller.getPersonData(req.decoded.id);
+          this.sendSuccess(res, 200, person);
+        } 
+        catch (error) {
+          next(error);
+        }
       }
-    });
+    );
   }
 }
 module.exports = PersonApi;

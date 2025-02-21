@@ -3,7 +3,10 @@ export default {
   navigation: {
     logo: "Amusement Park",
     login: "Login",
+    logout: "Logout",
     create_account: "Create Account",
+    welcome: "Welcome",
+    profile: "Profile",
   },
 
   // Home Page
