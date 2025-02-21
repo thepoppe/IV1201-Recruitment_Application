@@ -3,7 +3,10 @@ export default {
   navigation: {
     logo: "Nöjespark",
     login: "Logga in",
+    logout: "Logga ut",
     create_account: "Skapa konto",
+    welcome: "Välkommen",
+    profile: "Profil",
   },
 
   // Home Page

@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const UserContext = createContext(null);
 
@@ -14,6 +15,10 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+    const storedTokenCookie = Cookies.get("token");
+    if (storedTokenCookie) {
+      console.log("Setting token from cookie", storedTokenCookie);
+    }
     if (storedToken) {
       setToken(storedToken);
       fetchUser(storedToken);
@@ -50,6 +55,7 @@ export function UserProvider({ children }) {
       if (response.data.success) {
         setUser(response.data.data.person);
         setToken(response.data.data.token);
+        Cookies.set("token", response.data.data.token);
         localStorage.setItem("token", response.data.data.token);
         router.push("/");
       } else {
@@ -65,6 +71,7 @@ export function UserProvider({ children }) {
   const logout = () => {
     setUser(null);
     setToken(null);
+    Cookies.remove("token");
     localStorage.removeItem("token");
     router.push("/");
   };
