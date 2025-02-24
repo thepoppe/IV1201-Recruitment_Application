@@ -1,38 +1,56 @@
-require("dotenv").config();
 const express = require("express");
-const { Pool } = require("pg");
+const cors = require("cors");
+const ApiLoader = require("./src/api/apiLoader");
+const ErrorHandler = require("./src/api/errorHandler/errorHandler")
+const db = require("./src/config/database");
 
-const app = express();
-const port = 4000;
+/**
+ * Server class to setup the Express server
+*/
+class Server {
 
-// PostgreSQL connection setup
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-});
-
-// Test database connection
-app.get("/test-db", async (req, res) => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query("SELECT NOW() AS current_time");
-    client.release();
-    res.json({ success: true, time: result.rows[0].current_time });
-  } catch (err) {
-    console.error("Database connection error:", err);
-    res.status(500).json({ success: false, error: err.message });
+  /**
+   * Constructor to initialize the Express app
+  */
+  constructor() {
+    this.app = express();
+    this.setupMiddleware();
   }
-});
 
-// Root endpoint
-app.get("/", (req, res) => {
-  res.send("Backend is running!");
-});
+  /**
+   * Setup middleware for the Express app
+   * - Parse JSON bodies
+   * - Enable CORS
+   * 
+   */
+  setupMiddleware() {
+    this.app.use(express.json());
+    this.app.use(
+      cors({
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      })
+    );
 
-// Start server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+  }
+  
+  /**
+   * Start the server
+   * @param {number} port - The port to listen on
+  */
+ async start(port = 4000) {
+    await db.init();
+    const apiLoader = new ApiLoader();
+    await apiLoader.loadApis(this.app);
+
+    this.app.use(ErrorHandler.handleError)
+   
+    this.app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  }
+}
+
+const server = new Server();
+server.start();
