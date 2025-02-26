@@ -1,4 +1,9 @@
 class ErrorHandler {
+
+    constructor(logger){
+        this.logger = logger;
+        this.handleError = this.handleError.bind(this);
+    }
     /**
      * Handles Express errors and sends structured JSON responses.
      * @param {Error} err - The error object.
@@ -6,10 +11,8 @@ class ErrorHandler {
      * @param {Object} res - The Express response object.
      * @param {Function} next - The Express next function.
      */
-    static handleError(err, req, res, next) {
-        // Real Logger should handle this
-        console.error(`[ERROR]: ${err.message}.`);
-
+    handleError(err, req, res, next) {
+        this.logError(err);
         const status = err.status || 500;
         const message = err.userMessage || "An unexpected error occurred. Please try again later.";
 
@@ -17,6 +20,15 @@ class ErrorHandler {
             success: false,
             error: message
         });
+    }
+
+    /**
+     * Helper function to log error
+     */
+    logError(err){
+        const originalError = err.error;
+        const errorMessage = originalError?  `${err.message}\ncause: ${originalError.constructor.name} ${originalError.message}` : `${err.message}`;
+        this.logger.log("error", errorMessage);
     }
 }
 
