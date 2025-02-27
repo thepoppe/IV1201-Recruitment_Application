@@ -1,20 +1,28 @@
+const CompetenceProfileDTO = require("./competenceProfileDTO");
+const AvailabilityDTO = require("./availabilityDTO");
+
 /**
  * DTO for Application response
  */
 class ApplicationDTO {
-  constructor(application) {
+  constructor(application, person, competences = [], availabilities = []) {
     this.application_id = application.application_id;
     this.status = application.status;
     this.submission_date = application.submission_date;
+
+    // Applicant details
     this.applicant = {
-      name: application.person?.name,
-      surname: application.person?.surname,
-      email: application.person?.email,
+      name: person.name,
+      surname: person.surname,
+      email: person.email,
     };
-    this.competences = application.competences?.map(
+
+    // Competences & Availability
+    this.competences = competences.map(
       (competence) => new CompetenceProfileDTO(competence)
     );
-    this.availability = application.availability?.map(
+
+    this.availability = availabilities.map(
       (availability) => new AvailabilityDTO(availability)
     );
   }

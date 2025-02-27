@@ -1,10 +1,6 @@
 const RequestHandler = require("./requestHandler");
 const Controller = require("../controller/controller");
-const {
-  validateApplyForJob,
-  validateAddCompetence,
-  validateAddAvailability,
-} = require("../utils/applicationValidator");
+const { validateApplyForJob } = require("../utils/applicationValidator");
 
 class ApplicationAPI extends RequestHandler {
   constructor() {
@@ -13,55 +9,20 @@ class ApplicationAPI extends RequestHandler {
   }
 
   registerRoutes() {
-    // Apply for a job
+    // Apply for a job (now with competences & availability)
     this.router.post(
       "/apply",
       this.auth.authenticateUser.bind(this.auth),
       validateApplyForJob,
       async (req, res, next) => {
         try {
-          const application = await this.controller.applyForJob(req.decoded.id);
+          const { competences, availabilities } = req.body;
+          const application = await this.controller.applyForJob(
+            req.decoded.id,
+            competences,
+            availabilities
+          );
           this.sendSuccess(res, 201, application);
-        } catch (error) {
-          next(error);
-        }
-      }
-    );
-
-    // Add competence
-    this.router.post(
-      "/add-competence",
-      this.auth.authenticateUser.bind(this.auth),
-      validateAddCompetence,
-      async (req, res, next) => {
-        try {
-          const { competence_id, years_of_experience } = req.body;
-          const result = await this.controller.addCompetenceToApplication(
-            req.decoded.id,
-            competence_id,
-            years_of_experience
-          );
-          this.sendSuccess(res, 201, result);
-        } catch (error) {
-          next(error);
-        }
-      }
-    );
-
-    // Add availability
-    this.router.post(
-      "/add-availability",
-      this.auth.authenticateUser.bind(this.auth),
-      validateAddAvailability,
-      async (req, res, next) => {
-        try {
-          const { from_date, to_date } = req.body;
-          const result = await this.controller.addAvailabilityToApplication(
-            req.decoded.id,
-            from_date,
-            to_date
-          );
-          this.sendSuccess(res, 201, result);
         } catch (error) {
           next(error);
         }

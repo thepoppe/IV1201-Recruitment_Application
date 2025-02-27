@@ -171,7 +171,7 @@ class Controller {
   // ############################################################
   // Application related functions
   // Apply for a job
-  async applyForJob(person_id) {
+  async applyForJob(person_id, competences, availabilities) {
     try {
       const existingApplication = await this.applicationDAO.findByPersonId(
         person_id
@@ -181,74 +181,29 @@ class Controller {
           "User has already applied."
         );
       }
-      const application = await this.applicationDAO.createApplication(
-        person_id
+
+      // Fetch applicant information
+      const applicant = await this.personDAO.findById(person_id);
+      if (!applicant) {
+        throw GenericAppError.createNotFoundError("Applicant not found.");
+      }
+
+      // Apply for job transactionally
+      const application = await this.applicationDAO.applyForJobTransactionally(
+        person_id,
+        competences,
+        availabilities
       );
-      return new ApplicationDTO(application);
+
+      return new ApplicationDTO(
+        application,
+        applicant,
+        competences,
+        availabilities
+      );
     } catch (error) {
       throw GenericAppError.createInternalServerError(
         "Unexpected error while applying for a job",
-        error
-      );
-    }
-  }
-
-  // Add competence to application
-  async addCompetenceToApplication(
-    person_id,
-    competence_id,
-    years_of_experience
-  ) {
-    try {
-      // Check for duplicates using CompetenceProfileDAO
-      const existing = await this.competenceProfileDAO.findCompetence(
-        person_id,
-        competence_id
-      );
-      if (existing) {
-        throw GenericAppError.createBadRequestError(
-          "Competence already exists."
-        );
-      }
-
-      const competence = await this.competenceProfileDAO.addCompetence(
-        person_id,
-        competence_id,
-        years_of_experience
-      );
-      return new CompetenceProfileDTO(competence);
-    } catch (error) {
-      throw GenericAppError.createInternalServerError(
-        "Error adding competence",
-        error
-      );
-    }
-  }
-
-  // Add availability to application
-  async addAvailabilityToApplication(person_id, from_date, to_date) {
-    try {
-      // Check for overlapping availability using AvailabilityDAO
-      const overlap = await this.availabilityDAO.findAvailability(
-        person_id,
-        from_date,
-        to_date
-      );
-      if (overlap) {
-        throw GenericAppError.createBadRequestError(
-          "Availability period already exists."
-        );
-      }
-
-      const availability = await this.availabilityDAO.addAvailability(
-        person_id,
-        from_date,
-        to_date
-      );
-      return new AvailabilityDTO(availability);
-    } catch (error) {
-      throw GenericAppError.createInternalServerError(
-        "Error adding availability",
         error
       );
     }
