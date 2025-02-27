@@ -1,12 +1,21 @@
+const GenericAppError = require("../../utils/genericAppError");
+
+/**
+ * ErrodHandler is a middleware class that is called when the application throws an error.
+ */
 class ErrorHandler {
 
+    /**
+     * Constructor for ErrorHandler
+     * @param {Logger} logger - the logger instance 
+     */
     constructor(logger){
         this.logger = logger;
         this.handleError = this.handleError.bind(this);
     }
     /**
      * Handles Express errors and sends structured JSON responses.
-     * @param {Error} err - The error object.
+     * @param {GenericAppError} err - The error object.
      * @param {Object} req - The Express request object.
      * @param {Object} res - The Express response object.
      * @param {Function} next - The Express next function.
@@ -23,12 +32,21 @@ class ErrorHandler {
     }
 
     /**
-     * Helper function to log error
+     * Helper function to log thrown errors
+     * Errors causing status 500 logs an error event with full stacktrace
+     * Business logic errors logs a warning
+     * @param {GenericAppError} err - The thrown Error
      */
     logError(err){
         const originalError = err.error;
-        const errorMessage = originalError?  `${err.message}\ncause: ${originalError.constructor.name} ${originalError.message}` : `${err.message}`;
-        this.logger.log("error", errorMessage);
+        if (err.status == 500){
+            const errorMessage = originalError?  `${err.message}\ncause: ${originalError.stack}` : `${err.message}`;
+            this.logger.log("error", errorMessage);
+        }
+        else{
+            const errorMessage = originalError?  `${err.message}\ncause: ${originalError.constructor.name} ${originalError.message}` : `${err.message}`;
+            this.logger.log("warn", errorMessage);
+        }
     }
 }
 
