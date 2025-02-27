@@ -1,6 +1,8 @@
 const PersonDAO = require("../integration/personDAO");
 const PersonDTO = require("../models/personDTO")
 const GenericAppError = require("../utils/genericAppError")
+const ModelLoader = require("../models/dbModelLoader");
+const {getSequelize} = require("../config/database")
 const bcrypt = require("bcrypt");
 
 
@@ -12,6 +14,8 @@ class Controller{
      * Constructor for the Controller 
      */
     constructor(){
+        this.sequelize = getSequelize();
+        ModelLoader.initModels(this.sequelize);
         this.personDAO = new PersonDAO(); 
     }
 
