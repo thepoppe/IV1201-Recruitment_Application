@@ -110,4 +110,19 @@ export default {
       min: "Password must be at least 8 characters",
     },
   },
+
+  // Apply Job Page
+  applyJob: {
+    title: "Apply for a Job",
+    subtitle: "Click the button below to submit your job application.",
+    button: {
+      submit: "Submit Application",
+      loading: "Submitting...",
+    },
+    success: "Your job application has been submitted successfully!",
+    error: "Something went wrong. Please try again later.",
+    validation: {
+      invalid: "Invalid application request.",
+    },
+  },
 };
