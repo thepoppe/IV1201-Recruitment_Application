@@ -113,16 +113,39 @@ export default {
 
   // Apply Job Page
   applyJob: {
-    title: "Apply for a Job",
-    subtitle: "Click the button below to submit your job application.",
+    title: "Ansök om ett jobb",
+    subtitle:
+      "Fyll i dina kompetenser och tillgänglighet för att skicka in din ansökan.",
     button: {
-      submit: "Submit Application",
-      loading: "Submitting...",
+      submit: "Skicka ansökan",
+      loading: "Skickar...",
     },
-    success: "Your job application has been submitted successfully!",
-    error: "Something went wrong. Please try again later.",
+    success: "Din jobbansökan har skickats in framgångsrikt!",
+    error: "Något gick fel. Vänligen försök igen senare.",
+    fields: {
+      competences: "Dina kompetenser",
+      availability: "Din tillgänglighet",
+    },
+    placeholders: {
+      select_competence: "Välj en kompetens",
+      years_experience: "Antal års erfarenhet",
+    },
+    buttons: {
+      add_competence: "Lägg till kompetens",
+      add_availability: "Lägg till tillgänglighet",
+      remove: "Ta bort",
+    },
     validation: {
-      invalid: "Invalid application request.",
+      competence_id: "Kompetens-ID måste vara ett giltigt nummer",
+      competence_required: "Minst en kompetens krävs",
+      years_experience: "Erfarenhet måste vara ett nummer",
+      years_experience_min: "Erfarenhet kan inte vara negativ",
+      years_experience_max: "Erfarenhet kan inte överstiga 50 år",
+      from_date: "Från datum måste vara ett giltigt datum",
+      from_date_required: "Från datum krävs",
+      to_date: "Till datum måste vara ett giltigt datum",
+      to_date_required: "Till datum krävs",
+      to_date_greater: "Till datum måste vara senare än Från datum",
     },
   },
 };

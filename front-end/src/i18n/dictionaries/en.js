@@ -114,15 +114,38 @@ export default {
   // Apply Job Page
   applyJob: {
     title: "Apply for a Job",
-    subtitle: "Click the button below to submit your job application.",
+    subtitle:
+      "Fill in your competences and availability to submit your application.",
     button: {
       submit: "Submit Application",
       loading: "Submitting...",
     },
     success: "Your job application has been submitted successfully!",
     error: "Something went wrong. Please try again later.",
+    fields: {
+      competences: "Your Competences",
+      availability: "Your Availability",
+    },
+    placeholders: {
+      select_competence: "Select a competence",
+      years_experience: "Years of experience",
+    },
+    buttons: {
+      add_competence: "Add Competence",
+      add_availability: "Add Availability",
+      remove: "Remove",
+    },
     validation: {
-      invalid: "Invalid application request.",
+      competence_id: "Competence ID must be a valid number",
+      competence_required: "At least one competence is required",
+      years_experience: "Years of experience must be a number",
+      years_experience_min: "Years of experience cannot be negative",
+      years_experience_max: "Years of experience cannot exceed 50 years",
+      from_date: "From date must be a valid date",
+      from_date_required: "From date is required",
+      to_date: "To date must be a valid date",
+      to_date_required: "To date is required",
+      to_date_greater: "To date must be later than From date",
     },
   },
 };
