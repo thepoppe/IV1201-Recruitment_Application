@@ -10,6 +10,15 @@ class ApplicationDAO extends BaseDAO {
   }
 
   /**
+   * Finds an application by the applicant's ID
+   * @param {number} person_id - The applicant's ID
+   * @returns {Promise<Object>} The application
+   */
+  async findByPersonId(person_id) {
+    return await this.model.findOne({ where: { person_id } });
+  }
+
+  /**
    * Creates an application, availability, and competence profile in one transaction
    * @param {number} person_id - The applicant's ID
    * @param {Array} competences - List of competences with years of experience [{ competence_id, years_of_experience }]
