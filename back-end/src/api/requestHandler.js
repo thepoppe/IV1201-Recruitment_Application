@@ -38,6 +38,10 @@ class RequestHandler {
     });
   }
 
+  /**
+   * Logs a succssful request
+   * @param {string} msg - The message to log 
+   */
   logSuccess(msg){
     this.logger.log("info", msg);
   }
