@@ -9,8 +9,7 @@ const CompetenceDAO = require("../integration/competenceDAO");
 // DTO imports
 const PersonDTO = require("../models/personDTO");
 const ApplicationDTO = require("../models/applicationDTO");
-const CompetenceProfileDTO = require("../models/competenceProfileDTO");
-const AvailabilityDTO = require("../models/availabilityDTO");
+const CompetenceDTO = require("../models/competenceDTO");
 
 /**
  * Controller class for handling Requests
@@ -212,7 +211,8 @@ class Controller {
   // List all competences
   async listAllCompetences() {
     try {
-      return await this.competenceDAO.findAllCompetences();
+      const competences = await this.competenceDAO.findAllCompetences();
+      return competences.map((competence) => new CompetenceDTO(competence));
     } catch (error) {
       throw GenericAppError.createInternalServerError(
         "Error fetching competences",
