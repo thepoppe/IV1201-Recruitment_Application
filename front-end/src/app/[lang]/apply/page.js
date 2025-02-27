@@ -19,7 +19,9 @@ export default function ApplyJobPage() {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    reset,
+    watch,
+    formState: { errors, isValid },
   } = useForm({
     resolver: joiResolver(applyJobSchema(dict)),
     mode: "onBlur",
@@ -58,13 +60,14 @@ export default function ApplyJobPage() {
     fetchCompetences();
   }, [token]);
 
+  // Submission handler
   const onSubmit = async (data) => {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/application/apply`,
         data,
         {
@@ -76,6 +79,7 @@ export default function ApplyJobPage() {
       );
 
       setSuccess(dict.applyJob.success);
+      reset(); // Clear form after successful submission
     } catch (err) {
       setError(err.response?.data?.error || dict.applyJob.error);
     } finally {
@@ -83,12 +87,17 @@ export default function ApplyJobPage() {
     }
   };
 
+  // Watch availability fields to validate date dynamically
+  const watchAvailability = watch("availabilities");
+
   return (
-    <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+    <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
       <h1 className="text-2xl font-bold text-center text-gray-900">
         {dict.applyJob.title}
       </h1>
-      <p className="text-center text-gray-600 mt-2">{dict.applyJob.subtitle}</p>
+      <p className="text-center text-gray-600 mt-2 pb-4 border-b-4">
+        {dict.applyJob.subtitle}
+      </p>
 
       {error && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md text-sm text-red-600">
@@ -101,14 +110,14 @@ export default function ApplyJobPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-8">
         {/* Competences Section */}
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700">
+        <div className="border-b pb-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">
             {dict.applyJob.fields.competences}
           </h2>
           {competenceFields.map((item, index) => (
-            <div key={item.id} className="flex space-x-4 mt-3">
+            <div key={item.id} className="flex items-center space-x-4 mt-3">
               {/* Competence Selection */}
               <select
                 {...register(`competences.${index}.competence_id`)}
@@ -129,8 +138,10 @@ export default function ApplyJobPage() {
                 {...register(`competences.${index}.years_of_experience`)}
                 placeholder={dict.applyJob.placeholders.years_experience}
                 className="w-1/4 px-4 py-2 border rounded-md"
+                min="0"
+                max="50"
               />
-              {/* Remove Competence Button */}
+              {/* Remove Button */}
               {index > 0 && (
                 <button
                   type="button"
@@ -154,25 +165,30 @@ export default function ApplyJobPage() {
         </div>
 
         {/* Availability Section */}
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700">
+        <div className="border-b pb-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">
             {dict.applyJob.fields.availability}
           </h2>
           {availabilityFields.map((item, index) => (
-            <div key={item.id} className="flex space-x-4 mt-3">
+            <div key={item.id} className="flex items-center space-x-4 mt-3">
               {/* From Date */}
               <input
                 type="date"
                 {...register(`availabilities.${index}.from_date`)}
                 className="w-1/2 px-4 py-2 border rounded-md"
+                min={new Date().toISOString().split("T")[0]} // Prevent past dates
               />
               {/* To Date */}
               <input
                 type="date"
                 {...register(`availabilities.${index}.to_date`)}
                 className="w-1/2 px-4 py-2 border rounded-md"
+                min={
+                  watchAvailability[index]?.from_date ||
+                  new Date().toISOString().split("T")[0]
+                } // Ensure to-date is after from-date
               />
-              {/* Remove Availability Button */}
+              {/* Remove Button */}
               {index > 0 && (
                 <button
                   type="button"
@@ -193,14 +209,18 @@ export default function ApplyJobPage() {
           </button>
         </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition font-medium disabled:opacity-50"
-        >
-          {loading ? dict.applyJob.button.loading : dict.applyJob.button.submit}
-        </button>
+        {/* Submit Button Section */}
+        <div className="pt-4">
+          <button
+            type="submit"
+            disabled={loading || !isValid}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition font-medium disabled:opacity-50"
+          >
+            {loading
+              ? dict.applyJob.button.loading
+              : dict.applyJob.button.submit}
+          </button>
+        </div>
       </form>
     </div>
   );
