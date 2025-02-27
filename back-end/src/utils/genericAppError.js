@@ -7,7 +7,7 @@ class GenericAppError extends Error {
     constructor(message, status, error = null, userMessage) {
         super(message);
         this.status = status;
-        this.originalError = error;
+        this.error = error;
         this.userMessage = userMessage;
     }
 

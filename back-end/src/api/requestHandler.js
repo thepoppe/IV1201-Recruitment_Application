@@ -9,10 +9,11 @@ class RequestHandler {
    * Constructor for the RequestHandler
    * @param {string} basePath - The base path for the request
    */
-  constructor(basePath) {
+  constructor(basePath, logger) {
     this.router = express.Router();
     this.basePath = basePath;
     this.auth = new AuthHandler();
+    this.logger = logger;
   }
 
   /**
@@ -35,6 +36,14 @@ class RequestHandler {
       success: true,
       data,
     });
+  }
+
+  /**
+   * Logs a succssful request
+   * @param {string} msg - The message to log 
+   */
+  logSuccess(msg){
+    this.logger.log("info", msg);
   }
 
   /**

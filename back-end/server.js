@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const ApiLoader = require("./src/api/apiLoader");
 const ErrorHandler = require("./src/api/errorHandler/errorHandler")
+const Logger = require("./src/utils/logger");
+const HttpLogger = require("./src/api/httpLogger/httpLogger")
 const db = require("./src/config/database");
 
 /**
@@ -14,6 +16,10 @@ class Server {
   */
   constructor() {
     this.app = express();
+    this.logger = new Logger()
+    this.httpLogger = new HttpLogger(this.logger);
+    this.apiLoader = new ApiLoader(this.logger);
+    this.errorHandler = new ErrorHandler(this.logger)
     this.setupMiddleware();
   }
 
@@ -32,7 +38,7 @@ class Server {
         allowedHeaders: ["Content-Type", "Authorization"],
       })
     );
-
+    this.app.use(this.httpLogger.logHttpRequest);
   }
   
   /**
@@ -41,13 +47,12 @@ class Server {
   */
  async start(port = 4000) {
     await db.init();
-    const apiLoader = new ApiLoader();
-    await apiLoader.loadApis(this.app);
+    await this.apiLoader.loadApis(this.app);
 
-    this.app.use(ErrorHandler.handleError)
+    this.app.use(this.errorHandler.handleError)
    
     this.app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+      this.logger.log("info", `Server running on port ${port}`);
     });
   }
 }
