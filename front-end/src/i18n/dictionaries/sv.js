@@ -167,5 +167,7 @@ export default {
     years: "år",
     view_details: "Visa detaljer",
     no_applications: "Inga ansökningar hittades.",
+    application_details: "Ansökningsdetaljer",
+    error_fetching_application: "Misslyckades med att hämta ansökan.",
   },
 };

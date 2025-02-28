@@ -167,5 +167,7 @@ export default {
     years: "years",
     view_details: "View Details",
     no_applications: "No applications found.",
+    application_details: "Application Details",
+    error_fetching_application: "Failed to fetch application.",
   },
 };
