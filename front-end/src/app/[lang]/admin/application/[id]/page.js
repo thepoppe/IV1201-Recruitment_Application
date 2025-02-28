@@ -32,7 +32,7 @@ export default function ApplicationPage() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("Application fetched:", response.data.data);
+
         setApplication(response.data.data);
       } catch (err) {
         console.error("Error fetching application:", err.response?.data || err);

@@ -30,7 +30,7 @@ export default function AdminPage() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        console.log("Applications fetched:", response.data.data);
+
         setApplications(response.data.data);
       } catch (err) {
         console.error("Error fetching applications:", err.response?.data || err);

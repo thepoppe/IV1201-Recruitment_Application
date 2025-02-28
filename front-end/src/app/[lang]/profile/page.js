@@ -7,8 +7,6 @@ export default function ProfilePage() {
   const { user, application } = useUser();
   const { dict } = useLanguage();
 
-  console.log("application from profile: ", application);
-
   if (!user) {
     return <p className="text-center mt-10">{dict.profile.loading}</p>;
   }

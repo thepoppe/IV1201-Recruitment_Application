@@ -16,9 +16,6 @@ export function UserProvider({ children }) {
   const router = useRouter();
   const hasFetchedData = useRef(false); // Prevents duplicate API calls
 
-  console.log("User:", user);
-  console.log("application:", application?.application_id);
-
   // Check if token is stored in cookie and fetch user data
   useEffect(() => {
     if (hasFetchedData.current) return;
@@ -67,7 +64,6 @@ export function UserProvider({ children }) {
           headers: { Authorization: `Bearer ${authToken}` },
         }
       );
-      console.log("Fetched application:", response.data.data);
       setApplication(response.data.data);
     } catch (err) {
       console.error("Failed to fetch application:", err);
