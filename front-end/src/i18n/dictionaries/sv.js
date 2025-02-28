@@ -2,11 +2,14 @@ export default {
   // Navigation
   navigation: {
     logo: "Nöjespark",
-    login: "Logga in",
-    logout: "Logga ut",
-    create_account: "Skapa konto",
     welcome: "Välkommen",
     profile: "Profil",
+    apply_for_position: "Ansök om en tjänst",
+    view_application: "Visa ansökan",
+    admin_area: "Adminområde",
+    logout: "Logga ut",
+    login: "Logga in",
+    create_account: "Skapa konto",
   },
 
   // Home Page

@@ -2,11 +2,14 @@ export default {
   // Navigation
   navigation: {
     logo: "Amusement Park",
-    login: "Login",
-    logout: "Logout",
-    create_account: "Create Account",
     welcome: "Welcome",
     profile: "Profile",
+    apply_for_position: "Apply for a Position",
+    view_application: "View Application",
+    admin_area: "Admin Area",
+    logout: "Logout",
+    login: "Login",
+    create_account: "Create Account",
   },
 
   // Home Page
