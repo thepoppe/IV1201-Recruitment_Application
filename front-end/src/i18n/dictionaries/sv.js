@@ -114,6 +114,18 @@ export default {
     },
   },
 
+  // Profile Page
+  profile: {
+    loading: "Laddar användardata...",
+    application: "Din jobbansökan",
+    status: "Status",
+    submitted_on: "Inskickad den",
+    competences: "Kompetenser",
+    availability: "Tillgänglighet",
+    pnr: "Personnummer",
+    years: "år",
+  },
+
   // Apply Job Page
   applyJob: {
     title: "Ansök om ett jobb",

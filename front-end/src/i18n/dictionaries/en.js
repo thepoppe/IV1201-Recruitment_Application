@@ -114,6 +114,18 @@ export default {
     },
   },
 
+  // Profile Page
+  profile: {
+    loading: "Loading user data...",
+    application: "Your Job Application",
+    status: "Status",
+    submitted_on: "Submitted on",
+    competences: "Competences",
+    availability: "Availability",
+    pnr: "PNR",
+    years: "years",
+  },
+
   // Apply Job Page
   applyJob: {
     title: "Apply for a Job",
