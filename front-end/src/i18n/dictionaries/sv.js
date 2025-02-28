@@ -169,5 +169,8 @@ export default {
     no_applications: "Inga ansökningar hittades.",
     application_details: "Detaljer för Ansökan",
     error_fetching_application: "Misslyckades med att hämta ansökan.",
+    accept: "Acceptera",
+    reject: "Avvisa",
+    error_updating_status: "Misslyckades med att uppdatera statusen.",
   },
 };

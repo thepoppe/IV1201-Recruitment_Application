@@ -169,5 +169,8 @@ export default {
     no_applications: "No applications found.",
     application_details: "Details for Application",
     error_fetching_application: "Failed to fetch application.",
+    accept: "Accept",
+    reject: "Reject",
+    error_updating_status: "Failed to update status.",
   },
 };
