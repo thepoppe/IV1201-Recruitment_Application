@@ -162,6 +162,7 @@ export default {
       to_date_required: "Till datum krävs",
       to_date_greater: "Till datum måste vara senare än Från datum",
     },
+    applied: "Du har redan ansökt om ett jobb.",
   },
 
   // Admin Page

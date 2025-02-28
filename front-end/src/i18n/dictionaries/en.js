@@ -162,6 +162,7 @@ export default {
       to_date_required: "To date is required",
       to_date_greater: "To date must be later than From date",
     },
+    applied: "You have already applied for a job.",
   },
 
   // Admin Page

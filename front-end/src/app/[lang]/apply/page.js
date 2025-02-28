@@ -1,15 +1,17 @@
 "use client";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { useForm, useFieldArray } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useUser } from "@/contexts/UserContext";
 import { applyJobSchema } from "@/validations/applyJobSchema";
-import axios from "axios";
-import { useState, useEffect } from "react";
+import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 export default function ApplyJobPage() {
-  const { dict } = useLanguage();
-  const { token } = useUser();
+  const { dict, lang } = useLanguage();
+  const { token, updateApplication, application } = useUser();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
@@ -67,7 +69,7 @@ export default function ApplyJobPage() {
     setSuccess(null);
 
     try {
-      await axios.post(
+      const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/application/apply`,
         data,
         {
@@ -78,6 +80,7 @@ export default function ApplyJobPage() {
         }
       );
 
+      updateApplication(response.data.data);
       setSuccess(dict.applyJob.success);
       reset(); // Clear form after successful submission
     } catch (err) {
@@ -110,118 +113,130 @@ export default function ApplyJobPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-8">
-        {/* Competences Section */}
-        <div className="border-b pb-4">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">
-            {dict.applyJob.fields.competences}
-          </h2>
-          {competenceFields.map((item, index) => (
-            <div key={item.id} className="flex items-center space-x-4 mt-3">
-              {/* Competence Selection */}
-              <select
-                {...register(`competences.${index}.competence_id`)}
-                className="w-1/2 px-4 py-2 border rounded-md"
-              >
-                <option value="">
-                  {dict.applyJob.placeholders.select_competence}
-                </option>
-                {competences.map((comp) => (
-                  <option key={comp.competence_id} value={comp.competence_id}>
-                    {comp.name}
+      {/* If there is already an application, show a message, else show the form */}
+      {application ? (
+        <div className="mt-6 bg-green-100 p-6 text-center rounded-md">
+          <p className="text-lg text-center text-gray-600 mb-2">
+            {dict.applyJob.applied}
+          </p>
+          <Link href={`/${lang}/profile`}>
+            <Button variant="secondary">{dict.profile.application}</Button>
+          </Link>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-8">
+          {/* Competences Section */}
+          <div className="border-b pb-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-3">
+              {dict.applyJob.fields.competences}
+            </h2>
+            {competenceFields.map((item, index) => (
+              <div key={item.id} className="flex items-center space-x-4 mt-3">
+                {/* Competence Selection */}
+                <select
+                  {...register(`competences.${index}.competence_id`)}
+                  className="w-1/2 px-4 py-2 border rounded-md"
+                >
+                  <option value="">
+                    {dict.applyJob.placeholders.select_competence}
                   </option>
-                ))}
-              </select>
-              {/* Years of Experience */}
-              <input
-                type="number"
-                {...register(`competences.${index}.years_of_experience`)}
-                placeholder={dict.applyJob.placeholders.years_experience}
-                className="w-1/4 px-4 py-2 border rounded-md"
-                min="0"
-                max="50"
-              />
-              {/* Remove Button */}
-              {index > 0 && (
-                <button
-                  type="button"
-                  onClick={() => removeCompetence(index)}
-                  className="text-red-600 text-sm"
-                >
-                  {dict.applyJob.buttons.remove}
-                </button>
-              )}
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() =>
-              addCompetence({ competence_id: "", years_of_experience: "" })
-            }
-            className="mt-3 text-blue-600"
-          >
-            {dict.applyJob.buttons.add_competence}
-          </button>
-        </div>
+                  {competences.map((comp) => (
+                    <option key={comp.competence_id} value={comp.competence_id}>
+                      {comp.name}
+                    </option>
+                  ))}
+                </select>
+                {/* Years of Experience */}
+                <input
+                  type="number"
+                  {...register(`competences.${index}.years_of_experience`)}
+                  placeholder={dict.applyJob.placeholders.years_experience}
+                  className="w-1/4 px-4 py-2 border rounded-md"
+                  min="0"
+                  max="50"
+                />
+                {/* Remove Button */}
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeCompetence(index)}
+                    className="text-red-600 text-sm"
+                  >
+                    {dict.applyJob.buttons.remove}
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() =>
+                addCompetence({ competence_id: "", years_of_experience: "" })
+              }
+              className="mt-3 text-blue-600"
+            >
+              {dict.applyJob.buttons.add_competence}
+            </button>
+          </div>
 
-        {/* Availability Section */}
-        <div className="border-b pb-4">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">
-            {dict.applyJob.fields.availability}
-          </h2>
-          {availabilityFields.map((item, index) => (
-            <div key={item.id} className="flex items-center space-x-4 mt-3">
-              {/* From Date */}
-              <input
-                type="date"
-                {...register(`availabilities.${index}.from_date`)}
-                className="w-1/2 px-4 py-2 border rounded-md"
-                min={new Date().toISOString().split("T")[0]} // Prevent past dates
-              />
-              {/* To Date */}
-              <input
-                type="date"
-                {...register(`availabilities.${index}.to_date`)}
-                className="w-1/2 px-4 py-2 border rounded-md"
-                min={
-                  watchAvailability[index]?.from_date ||
-                  new Date().toISOString().split("T")[0]
-                } // Ensure to-date is after from-date
-              />
-              {/* Remove Button */}
-              {index > 0 && (
-                <button
-                  type="button"
-                  onClick={() => removeAvailability(index)}
-                  className="text-red-600 text-sm"
-                >
-                  {dict.applyJob.buttons.remove}
-                </button>
-              )}
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addAvailability({ from_date: "", to_date: "" })}
-            className="mt-3 text-blue-600"
-          >
-            {dict.applyJob.buttons.add_availability}
-          </button>
-        </div>
+          {/* Availability Section */}
+          <div className="border-b pb-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-3">
+              {dict.applyJob.fields.availability}
+            </h2>
+            {availabilityFields.map((item, index) => (
+              <div key={item.id} className="flex items-center space-x-4 mt-3">
+                {/* From Date */}
+                <input
+                  type="date"
+                  {...register(`availabilities.${index}.from_date`)}
+                  className="w-1/2 px-4 py-2 border rounded-md"
+                  min={new Date().toISOString().split("T")[0]} // Prevent past dates
+                />
+                {/* To Date */}
+                <input
+                  type="date"
+                  {...register(`availabilities.${index}.to_date`)}
+                  className="w-1/2 px-4 py-2 border rounded-md"
+                  min={
+                    watchAvailability[index]?.from_date ||
+                    new Date().toISOString().split("T")[0]
+                  } // Ensure to-date is after from-date
+                />
+                {/* Remove Button */}
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeAvailability(index)}
+                    className="text-red-600 text-sm"
+                  >
+                    {dict.applyJob.buttons.remove}
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => addAvailability({ from_date: "", to_date: "" })}
+              className="mt-3 text-blue-600"
+            >
+              {dict.applyJob.buttons.add_availability}
+            </button>
+          </div>
 
-        {/* Submit Button Section */}
-        <div className="pt-4">
-          <button
-            type="submit"
-            disabled={loading || !isValid}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition font-medium disabled:opacity-50"
-          >
-            {loading
-              ? dict.applyJob.button.loading
-              : dict.applyJob.button.submit}
-          </button>
-        </div>
-      </form>
+          {/* Submit Button Section */}
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={loading || !isValid}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition font-medium disabled:opacity-50"
+            >
+              {loading
+                ? dict.applyJob.button.loading
+                : dict.applyJob.button.submit}
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }
