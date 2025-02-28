@@ -151,4 +151,21 @@ export default {
       to_date_greater: "To date must be later than From date",
     },
   },
+
+  // Admin Page
+  admin: {
+    title: "Admin - Job Applications",
+    loading: "Loading applications...",
+    error_fetching: "Failed to fetch applications.",
+    id: "ID",
+    applicant: "Applicant",
+    email: "Email",
+    competences: "Competences (years)",
+    availability: "Availability",
+    status: "Status",
+    actions: "Actions",
+    years: "years",
+    view_details: "View Details",
+    no_applications: "No applications found.",
+  },
 };

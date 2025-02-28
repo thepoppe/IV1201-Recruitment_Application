@@ -151,4 +151,21 @@ export default {
       to_date_greater: "Till datum måste vara senare än Från datum",
     },
   },
+
+  // Admin Page
+  admin: {
+    title: "Admin - Jobbansökningar",
+    loading: "Laddar ansökningar...",
+    error_fetching: "Misslyckades med att hämta ansökningar.",
+    id: "ID",
+    applicant: "Sökande",
+    email: "E-post",
+    competences: "Kompetenser (år)",
+    availability: "Tillgänglighet",
+    status: "Status",
+    actions: "Åtgärder",
+    years: "år",
+    view_details: "Visa detaljer",
+    no_applications: "Inga ansökningar hittades.",
+  },
 };
