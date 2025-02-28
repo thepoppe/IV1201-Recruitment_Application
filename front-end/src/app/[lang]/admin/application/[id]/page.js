@@ -48,7 +48,7 @@ export default function ApplicationPage() {
 
   return (
     <div className="w-full max-w-5xl mx-auto p-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">{dict.admin.application_details}: {application?.application_id}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">{dict.admin.application_details} #{application?.application_id}</h1>
 
       <div className="border rounded-lg p-6 bg-gray-100 mb-6">
         <h2 className="text-lg font-semibold">{dict.admin.applicant}</h2>
@@ -60,7 +60,7 @@ export default function ApplicationPage() {
         <h2 className="text-lg font-semibold">{dict.admin.competences}</h2>
         <ul>
           {application?.competences?.map((comp, index) => (
-            <li key={index}>{comp?.competence?.name} ({comp.years_of_experience} {dict.admin.years})</li>
+            <li key={index}>{comp?.name} ({comp.years_of_experience} {dict.admin.years})</li>
           ))}
         </ul>
       </div>
