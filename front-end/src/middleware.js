@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
+import axios from "axios";
 
 // Configuration - easy to modify
 const locales = ["en", "sv"];
 const defaultLocale = "en";
 const protectedRoutes = ["/profile", "/apply"];
 const authRoutes = ["/login", "/create-account"];
+const recruiterRoutes = ["/admin"];
 
 // Helper function to get locale from request
 function getLocale(request) {
@@ -15,7 +17,7 @@ function getLocale(request) {
   return locales.includes(preferredLocale) ? preferredLocale : defaultLocale;
 }
 
-export function middleware(request) {
+export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
 
@@ -59,10 +61,31 @@ export function middleware(request) {
     );
   }
 
+  // Restrict /admin to recruiters only
+  if (token && recruiterRoutes.some((route) => pathname.startsWith(route))) {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/person/me`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const user = response.data.data;
+
+      if (user.role.name !== "recruiter") {
+        console.log(`Access Denied: User[${user.id}, ${user.role.name}] tried to access /admin`);
+        return NextResponse.redirect(new URL("/", request.url)); // Redirect unauthorized users
+      }
+    } catch (error) {
+      console.error("Error verifying recruiter access:", error);
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
-// Static matcher configuration that matches the original
+// Configuration object for Next.js middleware
 export const config = {
   matcher: [
     "/",
@@ -74,5 +97,6 @@ export const config = {
     "/sv/create-account",
     "/en/apply",
     "/sv/apply",
+    "/admin/:path*",
   ],
 };
