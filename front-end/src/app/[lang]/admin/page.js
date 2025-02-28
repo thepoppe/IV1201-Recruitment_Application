@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { useUser } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
@@ -7,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AdminPage() {
   const { user, token } = useUser();
-  const { dict } = useLanguage();
+  const { dict, lang } = useLanguage();
   const router = useRouter();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,9 +97,11 @@ export default function AdminPage() {
 
                 {/* Actions */}
                 <td className="border px-4 py-2">
-                  <a href={`/admin/application/${app.application_id}`} className="text-blue-600 hover:underline">
-                    {dict.admin.view_details}
-                  </a>
+                  <Link href={`/${lang}/admin/application/${app.application_id}`} passHref>
+                    <button className="text-blue-600 hover:underline">
+                      {dict.admin.view_details}
+                    </button>
+                  </Link>
                 </td>
               </tr>
             ))
