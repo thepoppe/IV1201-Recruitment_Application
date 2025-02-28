@@ -103,7 +103,7 @@ export default function ApplicationPage() {
         </ul>
       </div>
 
-      <div className={`border rounded-lg p-6 mb-6 ${application?.status === "accepted" ? "bg-green-100" : application?.status === "rejected" ? "bg-red-100" : "bg-gray-100"}`}>
+      <div className={`border rounded-lg p-6 mb-6 ${application?.status === "accepted" ? "bg-green-100" : application?.status === "rejected" ? "bg-red-100" : "bg-yellow-50"}`}>
         <h2 className="text-lg font-semibold">{dict.admin.status}</h2>
         <p className="capitalize">{application?.status}</p>
       </div>
@@ -112,7 +112,7 @@ export default function ApplicationPage() {
         {/* Status Update Buttons */}
         <div className="mt-4 flex gap-4">
           <Button 
-            variant="primary" 
+            variant="secondary" 
             disabled={updating || application?.status === "accepted"} 
             onClick={() => updateStatus("accepted")}
           >
