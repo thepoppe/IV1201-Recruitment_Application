@@ -25,7 +25,7 @@ export default function UserMenu() {
         </Link>
       ) : (
         <Link href={`/${lang}/apply`}>
-          <Button variant="primary">{dict.navigation.apply_for_position}</Button>
+          <Button variant="primary" className="bg-red-600 hover:bg-red-700">{dict.navigation.apply_for_position}</Button>
         </Link>
       )}
 
