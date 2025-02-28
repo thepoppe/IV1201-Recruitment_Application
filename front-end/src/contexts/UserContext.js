@@ -28,11 +28,17 @@ export function UserProvider({ children }) {
     if (storedTokenCookie) {
       setToken(storedTokenCookie);
       fetchUser(storedTokenCookie);
-      fetchUserApplication(storedTokenCookie);
     } else {
       setLoading(false);
     }
   }, []);
+
+  // Fetch user application data when user changes
+  useEffect(() => {
+    if (user && token && user.role === "applicant" && !application) {
+      fetchUserApplication(token);
+    }
+  }, [user, token]);
 
   // Fetch user data from API
   const fetchUser = async (authToken) => {
@@ -85,7 +91,12 @@ export function UserProvider({ children }) {
           secure: true,
           sameSite: "strict",
         });
-        fetchUserApplication(response.data.data.token);
+        
+        // Fetch user application data if user.role is applicant
+        if (response.data.data.person.role === "applicant") {
+          fetchUserApplication(response.data.data.token);
+        }
+
         router.push("/");
       } else {
         setError("Invalid credentials");
