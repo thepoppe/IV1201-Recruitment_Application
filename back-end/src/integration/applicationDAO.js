@@ -105,6 +105,23 @@ class ApplicationDAO extends BaseDAO {
     });
   }
 
+  /**
+   * Fetch a single application by ID
+   * @param {number} application_id - The application ID
+   * @returns {Promise<Application>} - The application object
+   */
+  async findApplicationById(application_id) {
+    return await this.model.findOne({
+      where: { application_id },
+      include: [
+        { model: Person, as: "person", attributes: ["name", "surname", "email"] },
+        { model: CompetenceProfile, as: "competences", include: [{ model: Competence, as: "competence", attributes: ["name"] }] },
+        { model: Availability, as: "availability" }
+      ],
+    });
+  }
+
+
 }
 
 module.exports = ApplicationDAO;

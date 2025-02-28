@@ -74,6 +74,25 @@ class ApplicationAPI extends RequestHandler {
       }
     );
 
+    // Fetch a single application by ID (Recruiter only)
+    this.router.get(
+      "/:id",
+      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authorizeRecruiter(this.controller), // Restrict to recruiters
+      async (req, res, next) => {
+        try {
+          const application = await this.controller.getApplicationById(req.params.id);
+          if (!application) {
+            return next(GenericAppError.createNotFoundError("Application not found"));
+          }
+          this.sendSuccess(res, 200, application);
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
+
+
   }
 }
 

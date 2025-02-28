@@ -263,6 +263,26 @@ class Controller {
     }
   }
 
+  /**
+   * Fetch a single application by ID
+   * @param {number} application_id - The ID of the application
+   * @returns {Promise<ApplicationDTO>}
+   */
+  async getApplicationById(application_id) {
+    try {
+      const application = await this.applicationDAO.findApplicationById(application_id);
+      if (!application) return null;
+      
+      return new ApplicationDTO(application, application.person, application.competences, application.availability);
+    } catch (error) {
+      throw GenericAppError.createInternalServerError(
+        `Unexpected error while retrieving application [${application_id}]`,
+        error
+      );
+    }
+  }
+
+
 }
 
 module.exports = Controller;
