@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -13,9 +13,13 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
+  const hasFetchedData = useRef(false); // Prevents duplicate API calls
 
   // Check if token is stored in cookie and fetch user data
   useEffect(() => {
+    if (hasFetchedData.current) return;
+    hasFetchedData.current = true;
+
     const storedTokenCookie = Cookies.get("token");
     if (storedTokenCookie) {
       setToken(storedTokenCookie);
