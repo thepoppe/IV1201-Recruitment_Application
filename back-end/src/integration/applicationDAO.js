@@ -1,5 +1,7 @@
 const BaseDAO = require("./baseDAO");
+const Person = require("../models/personModel");
 const Application = require("../models/applicationModel");
+const Competence = require("../models/competenceModel");
 const CompetenceProfile = require("../models/competenceProfileModel");
 const Availability = require("../models/availabilityModel");
 const db = require("../config/database"); // Sequelize instance
@@ -29,31 +31,26 @@ class ApplicationDAO extends BaseDAO {
     const transaction = await db.getSequelize().transaction();
 
     try {
-      // Step 1: Create Application
       const application = await Application.create(
-        { person_id },
-        { transaction }
+        {
+          person_id,
+          competences: competences.map((comp) => ({
+            competence_id: comp.competence_id,
+            years_of_experience: comp.years_of_experience,
+          })),
+          availability: availabilities.map((avail) => ({
+            from_date: avail.from_date,
+            to_date: avail.to_date,
+          })),
+        },
+        {
+          include: [
+            { model: CompetenceProfile, as: "competences" },
+            { model: Availability, as: "availability" },
+          ],
+          transaction,
+        }
       );
-
-      // Step 2: Create Competence Profile (if provided)
-      if (competences.length > 0) {
-        const competenceEntries = competences.map((comp) => ({
-          person_id,
-          competence_id: comp.competence_id,
-          years_of_experience: comp.years_of_experience,
-        }));
-        await CompetenceProfile.bulkCreate(competenceEntries, { transaction });
-      }
-
-      // Step 3: Create Availability (if provided)
-      if (availabilities.length > 0) {
-        const availabilityEntries = availabilities.map((avail) => ({
-          person_id,
-          from_date: avail.from_date,
-          to_date: avail.to_date,
-        }));
-        await Availability.bulkCreate(availabilityEntries, { transaction });
-      }
 
       // Commit transaction
       await transaction.commit();
@@ -63,6 +60,35 @@ class ApplicationDAO extends BaseDAO {
       await transaction.rollback();
       throw error;
     }
+  }
+
+  /**
+   * Finds an application by the applicant's ID with associated competences and availability
+   * @param {number} person_id - The applicant's ID
+   * @returns {Promise<Object>} The application with competences and availability
+   */
+  async findApplicationByPersonId(person_id) {
+    return await this.model.findOne({
+      where: { person_id },
+      include: [
+        {
+          model: Person,
+          as: "person",
+          attributes: ["name", "surname", "email"],
+        },
+        {
+          model: CompetenceProfile,
+          as: "competences",
+          include: [
+            { model: Competence, as: "competence", attributes: ["name"] },
+          ],
+        },
+        {
+          model: Availability,
+          as: "availability",
+        },
+      ],
+    });
   }
 }
 

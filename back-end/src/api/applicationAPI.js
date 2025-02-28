@@ -42,6 +42,22 @@ class ApplicationAPI extends RequestHandler {
         }
       }
     );
+
+    // Get user application for the authenticated user
+    this.router.get(
+      "/my-application",
+      this.auth.authenticateUser.bind(this.auth),
+      async (req, res, next) => {
+        try {
+          const application = await this.controller.getUserApplication(
+            req.decoded.id
+          );
+          this.sendSuccess(res, 200, application);
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
   }
 }
 

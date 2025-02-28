@@ -39,7 +39,7 @@ Application.init(
   }
 );
 
-// Define Associations
+// Associations for Application model
 Application.belongsTo(Person, { foreignKey: "person_id", as: "person" });
 Application.hasMany(CompetenceProfile, {
   foreignKey: "person_id",

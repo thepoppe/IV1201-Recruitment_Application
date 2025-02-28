@@ -220,6 +220,32 @@ class Controller {
       );
     }
   }
+
+  // Get user application
+  async getUserApplication(person_id) {
+    try {
+      const application = await this.applicationDAO.findApplicationByPersonId(
+        person_id
+      );
+      if (!application) {
+        throw GenericAppError.createNotFoundError(
+          "No application found for this user."
+        );
+      }
+
+      return new ApplicationDTO(
+        application,
+        application.person,
+        application.competences,
+        application.availability
+      );
+    } catch (error) {
+      throw GenericAppError.createInternalServerError(
+        "Unexpected error while retrieving user application",
+        error
+      );
+    }
+  }
 }
 
 module.exports = Controller;
