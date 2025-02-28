@@ -92,6 +92,27 @@ class ApplicationAPI extends RequestHandler {
       }
     );
 
+    // Update application status (Recruiter only)
+    this.router.patch(
+      "/:id/status",
+      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authorizeRecruiter(this.controller), // Restrict to recruiters
+      async (req, res, next) => {
+        try {
+          const { status } = req.body;
+          if (!["accepted", "rejected"].includes(status)) {
+            return next(GenericAppError.createBadRequestError("Invalid status"));
+          }
+
+          const updatedApplication = await this.controller.updateApplicationStatus(req.params.id, status);
+          this.sendSuccess(res, 200, updatedApplication);
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
+
+
 
   }
 }

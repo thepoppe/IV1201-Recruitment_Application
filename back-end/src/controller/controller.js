@@ -282,6 +282,31 @@ class Controller {
     }
   }
 
+  /**
+   * Update the status of an application
+   * @param {number} application_id - The ID of the application
+   * @param {string} status - The new status ('accepted' or 'rejected')
+   * @returns {Promise<ApplicationDTO>}
+   */
+  async updateApplicationStatus(application_id, status) {
+    try {
+      const application = await this.applicationDAO.findApplicationById(application_id);
+      if (!application) {
+        throw GenericAppError.createNotFoundError("Application not found");
+      }
+
+      application.status = status;
+      await application.save();
+
+      return new ApplicationDTO(application, application.person, application.competences, application.availability);
+    } catch (error) {
+      throw GenericAppError.createInternalServerError(
+        `Error updating status for application [${application_id}]`,
+        error
+      );
+    }
+  }
+
 
 }
 
