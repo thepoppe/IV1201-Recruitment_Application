@@ -37,6 +37,8 @@ export function UserProvider({ children }) {
   useEffect(() => {
     if (user && token && user.role === "applicant" && !application) {
       fetchUserApplication(token);
+    } else {
+      setLoading(false);
     }
   }, [user, token]);
 
