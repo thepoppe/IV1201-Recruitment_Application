@@ -14,6 +14,7 @@ export function UserProvider({ children }) {
   const [error, setError] = useState(null);
   const router = useRouter();
 
+  // Check if token is stored in cookie and fetch user data
   useEffect(() => {
     const storedTokenCookie = Cookies.get("token");
     if (storedTokenCookie) {
@@ -25,6 +26,7 @@ export function UserProvider({ children }) {
     }
   }, []);
 
+  // Fetch user data from API
   const fetchUser = async (authToken) => {
     try {
       const response = await axios.get(
@@ -40,6 +42,7 @@ export function UserProvider({ children }) {
     }
   };
 
+  // Fetch user application data from API
   const fetchUserApplication = async (authToken) => {
     try {
       const response = await axios.get(
@@ -58,6 +61,7 @@ export function UserProvider({ children }) {
     }
   };
 
+  // Login method to authenticate user
   const login = async (email, password) => {
     try {
       setLoading(true);
@@ -67,12 +71,12 @@ export function UserProvider({ children }) {
         { email, password }
       );
       if (response.data.success) {
-        setUser(response.data.data.person);
         setToken(response.data.data.token);
         Cookies.set("token", response.data.data.token, {
           secure: true,
           sameSite: "strict",
         });
+        fetchUser(response.data.data.token);
         fetchUserApplication(response.data.data.token);
         router.push("/");
       } else {
@@ -85,6 +89,7 @@ export function UserProvider({ children }) {
     }
   };
 
+  // Logout method to clear user data and token
   const logout = () => {
     setUser(null);
     setToken(null);
