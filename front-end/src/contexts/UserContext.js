@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Cookies from "js-cookie";
+import GlobalLoader from "@/components/GlobalLoader";
 
 const UserContext = createContext(null);
 
@@ -123,6 +124,7 @@ export function UserProvider({ children }) {
         updateApplication,
       }}
     >
+      {loading && <GlobalLoader />}
       {children}
     </UserContext.Provider>
   );
