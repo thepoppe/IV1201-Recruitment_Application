@@ -74,7 +74,7 @@ export default function ApplicationPage() {
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
   return (
-    <div className="w-full max-w-5xl mx-auto p-8">
+    <div className="w-full max-w-7xl mx-auto p-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">
         {dict.admin.application_details} #{application?.application_id}
       </h1>

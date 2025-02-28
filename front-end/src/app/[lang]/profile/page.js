@@ -10,7 +10,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center text-center p-6 bg-white rounded-lg shadow-md max-w-lg mx-auto mt-10">
+    <div className="flex flex-col items-center justify-center text-center p-6 bg-white rounded-lg shadow-md w-full max-w-2xl mx-auto mt-10">
       {/* User Icon */}
       <UserCircleIcon className="w-24 h-24 text-gray-400 mb-4" />
 
