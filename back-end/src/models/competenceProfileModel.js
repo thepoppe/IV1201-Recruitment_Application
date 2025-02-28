@@ -1,8 +1,8 @@
 const { DataTypes, Model } = require("sequelize");
 const db = require("../config/database");
-const sequelize = db.getSequelize();
-const Person = require("./personModel");
 const Competence = require("./competenceModel");
+
+const sequelize = db.getSequelize();
 
 class CompetenceProfile extends Model {}
 
@@ -16,19 +16,10 @@ CompetenceProfile.init(
     person_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Person,
-        key: "person_id",
-      },
-      onDelete: "CASCADE",
     },
     competence_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Competence,
-        key: "competence_id",
-      },
     },
     years_of_experience: {
       type: DataTypes.DECIMAL(4, 2),
@@ -42,5 +33,11 @@ CompetenceProfile.init(
     timestamps: false,
   }
 );
+
+// ✅ Keep a one-way association (CompetenceProfile -> Competence)
+CompetenceProfile.belongsTo(Competence, {
+  foreignKey: "competence_id",
+  as: "competence",
+});
 
 module.exports = CompetenceProfile;

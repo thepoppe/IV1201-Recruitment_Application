@@ -1,7 +1,10 @@
 const { DataTypes, Model } = require("sequelize");
 const db = require("../config/database");
-const sequelize = db.getSequelize();
+const CompetenceProfile = require("./competenceProfileModel");
+const Availability = require("./availabilityModel");
 const Person = require("./personModel");
+
+const sequelize = db.getSequelize();
 
 class Application extends Model {}
 
@@ -15,11 +18,6 @@ Application.init(
     person_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Person,
-        key: "person_id",
-      },
-      onDelete: "CASCADE",
     },
     submission_date: {
       type: DataTypes.DATE,
@@ -40,5 +38,16 @@ Application.init(
     timestamps: false,
   }
 );
+
+// Define Associations
+Application.belongsTo(Person, { foreignKey: "person_id", as: "person" });
+Application.hasMany(CompetenceProfile, {
+  foreignKey: "person_id",
+  as: "competences",
+});
+Application.hasMany(Availability, {
+  foreignKey: "person_id",
+  as: "availability",
+});
 
 module.exports = Application;
