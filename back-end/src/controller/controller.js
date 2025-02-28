@@ -246,6 +246,23 @@ class Controller {
       );
     }
   }
+
+  /**
+   * Fetch all applications (Recruiter only)
+   * @returns {Promise<Array<ApplicationDTO>>}
+   */
+  async getAllApplications() {
+    try {
+      const applications = await this.applicationDAO.findAllApplications();
+      return applications.map((app) => new ApplicationDTO(app, app.person, app.competences, app.availability));
+    } catch (error) {
+      throw GenericAppError.createInternalServerError(
+        "Unexpected error while retrieving all applications",
+        error
+      );
+    }
+  }
+
 }
 
 module.exports = Controller;

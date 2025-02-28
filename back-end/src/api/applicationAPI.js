@@ -58,6 +58,22 @@ class ApplicationAPI extends RequestHandler {
         }
       }
     );
+
+    // Fetch all applications (Recruiter only)
+    this.router.get(
+      "/all",
+      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authorizeRecruiter(this.controller), // Only recruiters can access
+      async (req, res, next) => {
+        try {
+          const applications = await this.controller.getAllApplications();
+          this.sendSuccess(res, 200, applications);
+        } catch (error) {
+          next(error);
+        }
+      }
+    );
+
   }
 }
 

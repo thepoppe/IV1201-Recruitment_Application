@@ -90,6 +90,21 @@ class ApplicationDAO extends BaseDAO {
       ],
     });
   }
+
+  /**
+   * Fetch all applications
+   * @returns {Promise<Array<Application>>} - List of all applications
+   */
+  async findAllApplications() {
+    return await this.model.findAll({
+      include: [
+        { model: Person, as: "person", attributes: ["name", "surname", "email"] },
+        { model: CompetenceProfile, as: "competences", include: [{ model: Competence, as: "competence", attributes: ["name"] }] },
+        { model: Availability, as: "availability" }
+      ],
+    });
+  }
+
 }
 
 module.exports = ApplicationDAO;
