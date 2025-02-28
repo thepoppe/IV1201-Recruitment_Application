@@ -28,7 +28,16 @@ class PersonDAO extends BaseDAO {
    * @returns {Promise<Person>} - The person object as raw data
    */
   async findByEmail(email) {
-    return await this.model.findOne({ where: { email } });
+    return await this.model.findOne({ 
+        where: { email },
+        include: [{ model: Role, as: "role", attributes: ["name"] }], });
+  }
+
+  // Find all persons and include their role
+  async findAll() {
+    return await this.model.findAll({
+        include: [{ model: Role, as: "role", attributes: ["name"] }],
+    });
   }
 
   /**
