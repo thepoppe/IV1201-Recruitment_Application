@@ -103,7 +103,7 @@ export default function ApplicationPage() {
         </ul>
       </div>
 
-      <div className="border rounded-lg p-6 bg-gray-100">
+      <div className={`border rounded-lg p-6 mb-6 ${application?.status === "accepted" ? "bg-green-100" : application?.status === "rejected" ? "bg-red-100" : "bg-gray-100"}`}>
         <h2 className="text-lg font-semibold">{dict.admin.status}</h2>
         <p className="capitalize">{application?.status}</p>
       </div>
@@ -119,8 +119,7 @@ export default function ApplicationPage() {
             {dict.admin.accept}
           </Button>
           <Button 
-            variant="secondary"
-            className="bg-red-600 hover:bg-red-700"
+            variant="danger"
             disabled={updating || application?.status === "rejected"} 
             onClick={() => updateStatus("rejected")}
           >

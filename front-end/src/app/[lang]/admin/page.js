@@ -93,7 +93,7 @@ export default function AdminPage() {
                 </td>
 
                 {/* Status */}
-                <td className="border px-4 py-2 capitalize">{app.status}</td>
+                <td className={`border px-4 py-2 capitalize ${app?.status === "accepted" ? "bg-green-100" : app?.status === "rejected" ? "bg-red-100" : "bg-gray-100"}`}>{app.status}</td>
 
                 {/* Actions */}
                 <td className="border px-4 py-2">
