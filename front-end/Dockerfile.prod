@@ -9,6 +9,9 @@ RUN npm ci
 # Copy project files
 COPY . .
 
+# Make sure tailwindcss is installed
+RUN npm install -D tailwindcss postcss autoprefixer
+
 # Build the Next.js app
 RUN npm run build
 
