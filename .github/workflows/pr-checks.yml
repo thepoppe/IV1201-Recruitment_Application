@@ -49,8 +49,6 @@ jobs:
           push: false
           load: true
           tags: recruitment_backend:test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           
       - name: Build frontend image
         uses: docker/build-push-action@v4
@@ -59,5 +57,3 @@ jobs:
           push: false
           load: true
           tags: recruitment_frontend:test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

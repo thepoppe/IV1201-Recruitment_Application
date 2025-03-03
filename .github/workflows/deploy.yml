@@ -57,8 +57,6 @@ jobs:
           context: ./back-end
           push: true
           tags: registry.heroku.com/${{ env.BACKEND_APP }}/web
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
       
       # Import database dump if needed (for first deployment)
       - name: Import database dump (first deployment only)
@@ -94,8 +92,6 @@ jobs:
           context: ./front-end
           push: true
           tags: registry.heroku.com/${{ env.FRONTEND_APP }}/web
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           build-args: |
             NEXT_PUBLIC_API_URL=${{ github.ref == 'refs/heads/main' && secrets.PROD_API_URL || secrets.STAGING_API_URL }}
       
