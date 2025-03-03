@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 
@@ -10,10 +11,12 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center text-center">
+    <div className="flex flex-col items-center justify-center text-center pt-[6rem]">
       <h1 className="text-4xl font-bold mb-6">{dict.home.title}</h1>
       <p className="max-w-lg text-lg mb-6">{dict.home.description} 🚀🎢</p>
-      <Button>{dict.home.apply}</Button>
+      <Link href={`/${lang}/apply`}>
+        <Button variant="danger">{dict.home.apply}</Button>
+      </Link>
     </div>
   );
 }
