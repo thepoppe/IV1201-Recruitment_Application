@@ -9,7 +9,15 @@ class ApplicationAPI extends RequestHandler {
   }
 
   registerRoutes() {
-    // Apply for a job (now with competences & availability)
+    /**
+     * @route POST /application/apply
+     * @description Apply for a job with competences and availability
+     * @access Private - Requires user authentication
+     * @param {Object} req.body.competences - List of applicant competences
+     * @param {Object} req.body.availabilities - Applicant availability periods
+     * @returns {Object} 201 - Application object
+     * @throws {Error} When application creation fails
+     */
     this.router.post(
       "/apply",
       this.auth.authenticateUser.bind(this.auth),
@@ -29,7 +37,13 @@ class ApplicationAPI extends RequestHandler {
       }
     );
 
-    // List all competences
+    /**
+     * @route GET /application/competences
+     * @description List all available competences
+     * @access Private - Requires user authentication
+     * @returns {Array} 200 - Array of competence objects
+     * @throws {Error} When fetching competences fails
+     */
     this.router.get(
       "/competences",
       this.auth.authenticateUser.bind(this.auth),
@@ -43,7 +57,13 @@ class ApplicationAPI extends RequestHandler {
       }
     );
 
-    // Get user application for the authenticated user
+    /**
+     * @route GET /application/my-application
+     * @description Get the current user's application
+     * @access Private - Requires user authentication
+     * @returns {Object} 200 - User's application object
+     * @throws {Error} When fetching application fails
+     */
     this.router.get(
       "/my-application",
       this.auth.authenticateUser.bind(this.auth),
@@ -59,7 +79,13 @@ class ApplicationAPI extends RequestHandler {
       }
     );
 
-    // Fetch all applications (Recruiter only)
+    /**
+     * @route GET /application/all
+     * @description Fetch all applications in the system
+     * @access Private - Requires recruiter role
+     * @returns {Array} 200 - Array of application objects
+     * @throws {Error} When fetching applications fails
+     */
     this.router.get(
       "/all",
       this.auth.authenticateUser.bind(this.auth),
@@ -74,7 +100,14 @@ class ApplicationAPI extends RequestHandler {
       }
     );
 
-    // Fetch a single application by ID (Recruiter only)
+    /**
+     * @route GET /application/:id
+     * @description Fetch a single application by ID
+     * @access Private - Requires recruiter role
+     * @param {string} req.params.id - Application ID
+     * @returns {Object} 200 - Application object
+     * @throws {Error} When application is not found or fetch fails
+     */
     this.router.get(
       "/:id",
       this.auth.authenticateUser.bind(this.auth),
@@ -89,7 +122,15 @@ class ApplicationAPI extends RequestHandler {
       }
     );
 
-    // Update application status (Recruiter only)
+    /**
+     * @route PATCH /application/:id/status
+     * @description Update application status
+     * @access Private - Requires recruiter role
+     * @param {string} req.params.id - Application ID
+     * @param {string} req.body.status - New application status
+     * @returns {Object} 200 - Updated application object
+     * @throws {Error} When status update fails
+     */
     this.router.patch(
       "/:id/status",
       this.auth.authenticateUser.bind(this.auth),
@@ -104,9 +145,6 @@ class ApplicationAPI extends RequestHandler {
         }
       }
     );
-
-
-
   }
 }
 

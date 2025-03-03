@@ -169,7 +169,19 @@ class Controller {
 
   // ############################################################
   // Application related functions
-  // Apply for a job
+
+  /**
+   * Apply for a job
+   * @param {number} person_id - The ID of the person applying for the job
+   * @param {Array<number>} competences - The IDs of the competences the person has
+   * @param {Array<Object>} availabilities - The availabilities of the person
+   * @param {string} availabilities.from_date - The start date of the availability
+   * @param {string} availabilities.to_date - The end date of the availability
+   * @returns {Promise<ApplicationDTO>}
+   * @throws {GenericAppError} `400 Bad Request` - If the user has already applied
+   * @throws {GenericAppError} `404 Not Found` - If the applicant is not found
+   * @throws {GenericAppError} `500 Internal Server Error` - If a database or backend processing error
+   */
   async applyForJob(person_id, competences, availabilities) {
     try {
       const existingApplication = await this.applicationDAO.findByPersonId(
@@ -210,7 +222,11 @@ class Controller {
     }
   }
 
-  // List all competences
+  /**
+   * List all competences
+   * @returns {Promise<CompetenceDTO[]>}
+   * @throws {GenericAppError} `500 Internal Server Error` - If a database or backend processing error occurs
+   * */
   async listAllCompetences() {
     try {
       const competences = await this.competenceDAO.findAllCompetences();
@@ -225,7 +241,13 @@ class Controller {
     }
   }
 
-  // Get user application
+  /**
+   * Get user application for the authenticated user
+   * @param {number} person_id - The ID of the person
+   * @returns {Promise<ApplicationDTO>}
+   * @throws {GenericAppError} `404 Not Found` - If no application is found for the user
+   * @throws {GenericAppError} `500 Internal Server Error` - If a database or backend processing error occurs
+   * */
   async getUserApplication(person_id) {
     try {
       const application = await this.applicationDAO.findApplicationByPersonId(
@@ -256,6 +278,7 @@ class Controller {
   /**
    * Fetch all applications (Recruiter only)
    * @returns {Promise<Array<ApplicationDTO>>}
+   * @throws {GenericAppError} `500 Internal Server Error` - If a database or backend processing error occurs
    */
   async getAllApplications() {
     try {
@@ -275,6 +298,8 @@ class Controller {
    * Fetch a single application by ID
    * @param {number} application_id - The ID of the application
    * @returns {Promise<ApplicationDTO>}
+   * @throws {GenericAppError} `404 Not Found` - If the application is not found
+   * @throws {GenericAppError} `500 Internal Server Error` - If a database or backend processing error occurs
    */
   async getApplicationById(application_id) {
     try {
@@ -299,6 +324,9 @@ class Controller {
    * @param {number} application_id - The ID of the application
    * @param {string} status - The new status ('accepted' or 'rejected')
    * @returns {Promise<ApplicationDTO>}
+   * @throws {GenericAppError} `400 Bad Request` - If the status is invalid
+   * @throws {GenericAppError} `404 Not Found` - If the application is not found
+   * @throws {GenericAppError} `500 Internal Server Error` - If a database or backend processing error occurs
    */
   async updateApplicationStatus(application_id, status) {
     try {
