@@ -1,0 +1,11 @@
+build:
+  docker:
+    web: Dockerfile
+  config:
+    NODE_ENV: production
+    JWT_SECRET: ${JWT_SECRET}
+    JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+    # Heroku automatically sets DATABASE_URL which will be used in the app
+
+run:
+  web: npm start

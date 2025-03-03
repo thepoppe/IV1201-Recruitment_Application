@@ -1,0 +1,9 @@
+build:
+  docker:
+    web: Dockerfile
+  config:
+    NODE_ENV: production
+    NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+
+run:
+  web: npm start
