@@ -115,11 +115,6 @@ export function UserProvider({ children }) {
     router.push("/");
   };
 
-  // Method to update application state from Apply Job page
-  const updateApplication = (newApplication) => {
-    setApplication(newApplication);
-  };
-
   return (
     <UserContext.Provider
       value={{
@@ -130,7 +125,7 @@ export function UserProvider({ children }) {
         error,
         login,
         logout,
-        updateApplication,
+        fetchUserApplication,
       }}
     >
       {loading && <GlobalLoader />}

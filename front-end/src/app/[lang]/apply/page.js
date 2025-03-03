@@ -11,7 +11,7 @@ import Button from "@/components/ui/Button";
 
 export default function ApplyJobPage() {
   const { dict, lang } = useLanguage();
-  const { token, updateApplication, application } = useUser();
+  const { token, fetchUserApplication, application } = useUser();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
@@ -80,7 +80,11 @@ export default function ApplyJobPage() {
         }
       );
 
-      updateApplication(response.data.data);
+      // If successful, fetch user application data
+      // we fetch the user application data again to update the UI, since the response.data.data does not contain the names for competences
+      if (response.status === 201) {
+        fetchUserApplication(token);
+      }
       setSuccess(dict.applyJob.success);
       reset(); // Clear form after successful submission
     } catch (err) {
