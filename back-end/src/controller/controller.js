@@ -201,7 +201,9 @@ class Controller {
         availabilities
       );
     } catch (error) {
-      throw GenericAppError.createInternalServerError(
+      if (error instanceof GenericAppError) throw error;
+      else
+        throw GenericAppError.createInternalServerError(
         "Unexpected error while applying for a job",
         error
       );
@@ -214,10 +216,12 @@ class Controller {
       const competences = await this.competenceDAO.findAllCompetences();
       return competences.map((competence) => new CompetenceDTO(competence));
     } catch (error) {
-      throw GenericAppError.createInternalServerError(
-        "Error fetching competences",
-        error
-      );
+      if (error instanceof GenericAppError) throw error;
+      else
+        throw GenericAppError.createInternalServerError(
+          "Unexpected error while retrieving all competences",
+          error
+        );
     }
   }
 
@@ -240,7 +244,9 @@ class Controller {
         application.availability
       );
     } catch (error) {
-      throw GenericAppError.createInternalServerError(
+      if (error instanceof GenericAppError) throw error;
+      else
+        throw GenericAppError.createInternalServerError(
         "Unexpected error while retrieving user application",
         error
       );
@@ -256,10 +262,12 @@ class Controller {
       const applications = await this.applicationDAO.findAllApplications();
       return applications.map((app) => new ApplicationDTO(app, app.person, app.competences, app.availability));
     } catch (error) {
-      throw GenericAppError.createInternalServerError(
-        "Unexpected error while retrieving all applications",
-        error
-      );
+      if (error instanceof GenericAppError) throw error;
+      else
+        throw GenericAppError.createInternalServerError(
+          "Unexpected error while retrieving all applications",
+          error
+        );
     }
   }
 
@@ -271,11 +279,15 @@ class Controller {
   async getApplicationById(application_id) {
     try {
       const application = await this.applicationDAO.findApplicationById(application_id);
-      if (!application) return null;
+      if (!application) {
+        throw GenericAppError.createNotFoundError("Application not found");
+      }
       
       return new ApplicationDTO(application, application.person, application.competences, application.availability);
     } catch (error) {
-      throw GenericAppError.createInternalServerError(
+      if (error instanceof GenericAppError) throw error;
+      else
+        throw GenericAppError.createInternalServerError(
         `Unexpected error while retrieving application [${application_id}]`,
         error
       );
@@ -295,13 +307,19 @@ class Controller {
         throw GenericAppError.createNotFoundError("Application not found");
       }
 
+      if (!["accepted", "rejected"].includes(status)) {
+        return next(GenericAppError.createBadRequestError("Invalid status"));
+      }
+
       application.status = status;
       await application.save();
 
       return new ApplicationDTO(application, application.person, application.competences, application.availability);
     } catch (error) {
-      throw GenericAppError.createInternalServerError(
-        `Error updating status for application [${application_id}]`,
+      if (error instanceof GenericAppError) throw error;
+      else
+        throw GenericAppError.createInternalServerError(
+        `Unexpected error while updating application [${application_id}] status`,
         error
       );
     }

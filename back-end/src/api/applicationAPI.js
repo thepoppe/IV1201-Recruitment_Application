@@ -82,9 +82,6 @@ class ApplicationAPI extends RequestHandler {
       async (req, res, next) => {
         try {
           const application = await this.controller.getApplicationById(req.params.id);
-          if (!application) {
-            return next(GenericAppError.createNotFoundError("Application not found"));
-          }
           this.sendSuccess(res, 200, application);
         } catch (error) {
           next(error);
@@ -100,10 +97,6 @@ class ApplicationAPI extends RequestHandler {
       async (req, res, next) => {
         try {
           const { status } = req.body;
-          if (!["accepted", "rejected"].includes(status)) {
-            return next(GenericAppError.createBadRequestError("Invalid status"));
-          }
-
           const updatedApplication = await this.controller.updateApplicationStatus(req.params.id, status);
           this.sendSuccess(res, 200, updatedApplication);
         } catch (error) {
