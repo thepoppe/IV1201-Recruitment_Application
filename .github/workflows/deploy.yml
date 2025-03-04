@@ -89,7 +89,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-backend
 
-    # Define environment based on the branch
     environment:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
 
@@ -107,6 +106,13 @@ jobs:
             echo "FRONTEND_APP=recruit-web-staging" >> $GITHUB_ENV
             echo "API_URL=${{ secrets.STAGING_API_URL }}" >> $GITHUB_ENV
           fi
+
+      - name: Login to Heroku Container Registry  # 🔥 ADD THIS STEP 🔥
+        uses: docker/login-action@v2
+        with:
+          registry: registry.heroku.com
+          username: ${{ secrets.HEROKU_EMAIL }}
+          password: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v4
