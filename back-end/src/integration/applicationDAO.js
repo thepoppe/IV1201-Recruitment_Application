@@ -56,6 +56,7 @@ class ApplicationDAO extends BaseDAO {
       await transaction.commit();
       return application;
     } catch (error) {
+      console.error("🔥 Database Insert Error:", error.original || error);
       // Rollback transaction if any error occurs
       await transaction.rollback();
       throw error;
