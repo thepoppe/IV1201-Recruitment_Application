@@ -26,8 +26,8 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 
-# Expose the port
-EXPOSE 3000
+# Don't use EXPOSE as it's not supported by Heroku
+# The app should listen on the port provided by the PORT environment variable
 
 # Start the app
 CMD ["npm", "start"]

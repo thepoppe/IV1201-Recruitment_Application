@@ -11,23 +11,44 @@ class Database {
    */
   constructor() {
     if (!Database.instance) {
-      this.sequelize = new Sequelize(
-        process.env.DB_NAME,
-        process.env.DB_USER,
-        process.env.DB_PASSWORD,
-        {
-          host: process.env.DB_HOST,
+      // Check if DATABASE_URL is available (for Heroku)
+      if (process.env.DATABASE_URL) {
+        this.sequelize = new Sequelize(process.env.DATABASE_URL, {
           dialect: "postgres",
-          port: process.env.DB_PORT,
           logging: false,
+          dialectOptions: {
+            ssl: {
+              require: true,
+              rejectUnauthorized: false, // Required for Heroku Postgres
+            },
+          },
           pool: {
             max: 10,
             min: 2,
             acquire: 30000,
             idle: 10000,
           },
-        }
-      );
+        });
+      } else {
+        // For local development
+        this.sequelize = new Sequelize(
+          process.env.DB_NAME,
+          process.env.DB_USER,
+          process.env.DB_PASSWORD,
+          {
+            host: process.env.DB_HOST,
+            dialect: "postgres",
+            port: process.env.DB_PORT,
+            logging: false,
+            pool: {
+              max: 10,
+              min: 2,
+              acquire: 30000,
+              idle: 10000,
+            },
+          }
+        );
+      }
       this.initialized = false;
       Database.instance = this;
     }
@@ -35,20 +56,26 @@ class Database {
   }
 
   /**
-  * Initialize the database connection
-  */
+   * Initialize the database connection
+   */
   async init() {
     if (!this.initialized) {
-      await this.sequelize.authenticate();
-      await this.sequelize.sync();
-      this.initialized = true;
+      try {
+        await this.sequelize.authenticate();
+        console.log("Database connection has been established successfully.");
+        await this.sequelize.sync();
+        this.initialized = true;
+      } catch (error) {
+        console.error("Unable to connect to the database:", error);
+        throw error;
+      }
     }
   }
 
   /*
-  * Get the Sequelize singleton instance
-  * @returns {Sequelize} - The Sequelize instance
-  */
+   * Get the Sequelize singleton instance
+   * @returns {Sequelize} - The Sequelize instance
+   */
   getSequelize() {
     return this.sequelize;
   }
