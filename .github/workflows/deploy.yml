@@ -38,11 +38,18 @@ jobs:
           password: ${{ secrets.HEROKU_API_KEY }}
 
       # Set up PostgreSQL database add-on
-      - name: Set up PostgreSQL
+      - name: Ensure PostgreSQL is Set Up
         run: |
-          # Create Heroku PostgreSQL add-on (essential-0 plan for both staging & prod)
-          heroku addons:create heroku-postgresql:essential-0 --app ${{ env.BACKEND_APP }} || true
-          sleep 5  # Ensure DATABASE_URL is available
+          # Check if PostgreSQL is already added
+          if heroku addons:info heroku-postgresql --app ${{ env.BACKEND_APP }} > /dev/null 2>&1; then
+            echo "✅ PostgreSQL already exists. Skipping creation."
+          else
+            echo "🚀 Creating a new PostgreSQL database..."
+            heroku addons:create heroku-postgresql:essential-0 --app ${{ env.BACKEND_APP }}
+          fi
+          
+          # Wait for Heroku to update DATABASE_URL
+          sleep 5
           echo "DATABASE_URL=$(heroku config:get DATABASE_URL --app ${{ env.BACKEND_APP }})" >> $GITHUB_ENV
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
