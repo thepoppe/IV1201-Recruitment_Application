@@ -1,6 +1,6 @@
 build:
   docker:
-    web: Dockerfile.prod
+    web: Dockerfile.web
   config:
     NODE_ENV: production
     JWT_SECRET: ${JWT_SECRET}

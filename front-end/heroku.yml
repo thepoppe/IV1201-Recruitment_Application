@@ -1,6 +1,6 @@
 build:
   docker:
-    web: Dockerfile.prod
+    web: Dockerfile.web
   config:
     NODE_ENV: production
     NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
