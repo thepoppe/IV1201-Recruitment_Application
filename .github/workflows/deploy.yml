@@ -125,6 +125,18 @@ jobs:
           username: ${{ secrets.HEROKU_EMAIL }}
           password: ${{ secrets.HEROKU_API_KEY }}
 
+      # Set environment variables in Heroku BEFORE building
+      - name: Set frontend environment variables
+        run: |
+          heroku config:set NEXT_PUBLIC_API_URL=${{ env.API_URL }} --app ${{ env.FRONTEND_APP }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # Modify Dockerfile approach for better Next.js build-time env vars
+      - name: Create .env.production file
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ env.API_URL }}" > ./front-end/.env.production
+
       - name: Build and push frontend
         uses: docker/build-push-action@v4
         with:
@@ -134,12 +146,6 @@ jobs:
           tags: registry.heroku.com/${{ env.FRONTEND_APP }}/web
           build-args: |
             NEXT_PUBLIC_API_URL=${{ env.API_URL }}
-
-      - name: Set frontend environment variables
-        run: |
-          heroku config:set NEXT_PUBLIC_API_URL=${{ env.API_URL }} --app ${{ env.FRONTEND_APP }}
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 
       - name: Release frontend to Heroku
         run: |
