@@ -43,7 +43,7 @@ export function UserProvider({ children }) {
   const fetchUser = async (authToken) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/person/me`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/person/me`,
         {
           headers: { Authorization: `Bearer ${authToken}` },
         }
@@ -59,7 +59,7 @@ export function UserProvider({ children }) {
   const fetchUserApplication = async (authToken) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/application/my-application`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/application/my-application`,
         {
           headers: { Authorization: `Bearer ${authToken}` },
         }
@@ -79,7 +79,7 @@ export function UserProvider({ children }) {
       setLoading(true);
       setError(null);
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/person/login`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/person/login`,
         { email, password }
       );
       if (response.data.success) {

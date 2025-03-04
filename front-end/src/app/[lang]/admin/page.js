@@ -25,7 +25,7 @@ export default function AdminPage() {
     const fetchApplications = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/application/all`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/application/all`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

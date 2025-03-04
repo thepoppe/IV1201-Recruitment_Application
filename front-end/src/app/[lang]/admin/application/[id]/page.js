@@ -27,7 +27,7 @@ export default function ApplicationPage() {
     const fetchApplication = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/application/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/application/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -55,7 +55,7 @@ export default function ApplicationPage() {
     setUpdating(true);
     try {
       const response = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_URL}/application/${id}/status`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/application/${id}/status`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` },

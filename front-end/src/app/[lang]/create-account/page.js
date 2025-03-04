@@ -28,7 +28,7 @@ export default function CreateAccount() {
       setError("");
 
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/person/create-account`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/person/create-account`,
         data
       );
       setSuccess(true);

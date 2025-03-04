@@ -65,7 +65,7 @@ export async function middleware(request) {
   if (token && recruiterRoutes.some((route) => pathname.startsWith(route))) {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/person/me`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/person/me`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

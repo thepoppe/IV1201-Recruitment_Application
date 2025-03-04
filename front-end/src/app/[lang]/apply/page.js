@@ -49,7 +49,7 @@ export default function ApplyJobPage() {
     const fetchCompetences = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/application/competences`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/application/competences`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -70,7 +70,7 @@ export default function ApplyJobPage() {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/application/apply`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/application/apply`,
         data,
         {
           headers: {
