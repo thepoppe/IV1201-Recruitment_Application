@@ -103,15 +103,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set Heroku app names
+      - name: Set Heroku app names and API URLs
         id: set-app-names
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "FRONTEND_APP=recruit-web-prod" >> $GITHUB_ENV
-            echo "API_URL=${{ secrets.PROD_API_URL }}" >> $GITHUB_ENV
+            echo "API_URL=https://recruit-api-prod-296be8f05b81.herokuapp.com" >> $GITHUB_ENV
           else
             echo "FRONTEND_APP=recruit-web-staging" >> $GITHUB_ENV
-            echo "API_URL=${{ secrets.STAGING_API_URL }}" >> $GITHUB_ENV
+            echo "API_URL=https://recruit-api-staging-1372e4e3a3b5.herokuapp.com" >> $GITHUB_ENV
           fi
 
       - name: Install Heroku CLI
