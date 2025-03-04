@@ -1,0 +1,35 @@
+const { Sequelize } = require("sequelize");
+const ModelLoader = require("../../models/dbModelLoader"); 
+
+let sequelize;
+
+async function setupDatabase() {
+
+  sequelize = new Sequelize("test_db", "postgres", "postgres", {
+    host: "localhost",
+    port: 5433,
+    dialect: "postgres",
+    logging: false,
+  });
+
+  await sequelize.authenticate();
+  ModelLoader.initModels(sequelize);
+  await sequelize.sync({ force: true });
+}
+
+async function closeDatabase() {
+  if (sequelize) {
+    await sequelize.close();
+    sequelize = null;
+  }
+}
+
+function getSequelize() {
+  return sequelize;
+}
+
+module.exports = {
+  setupDatabase,
+  closeDatabase,
+  getSequelize,
+};
