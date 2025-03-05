@@ -269,7 +269,6 @@ describe("PersonApi", () => {
             const response = await request(tempApp)
                 .get(`/api/person/id/${person.id}`)
                 .expect(401);
-            console.log(response.body);
             expect(response.status).not.toBe(500);
             expect(tempControllerMock.getPersonData).not.toHaveBeenCalled();
         });
