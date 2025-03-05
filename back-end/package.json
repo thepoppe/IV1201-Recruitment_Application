@@ -27,5 +27,8 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.9"
+  },
+  "jest": {
+    "testPathIgnorePatterns": ["/node_modules/", "/__tests__/mocks/"]
   }
 }

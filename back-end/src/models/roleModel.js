@@ -1,6 +1,5 @@
 const {DataTypes, Model} = require('sequelize');
 const db = require("../config/database");
-const sequelize = db.getSequelize();
 
 class Role extends Model {}
 
@@ -18,7 +17,7 @@ Role.init(
     },
   },
   {
-    sequelize,
+    sequelize: db.getSequelize(),
     modelName: "Role",
     tableName: "role",
     timestamps: false,

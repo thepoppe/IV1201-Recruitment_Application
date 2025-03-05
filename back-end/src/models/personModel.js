@@ -2,7 +2,6 @@ const {DataTypes, Model} = require('sequelize');
 const Role = require('./roleModel');
 const db = require("../config/database");
 const bcrypt = require("bcrypt");
-const sequelize = db.getSequelize();
 
 /**
  * Person Model for the database
@@ -70,7 +69,7 @@ Person.init(
     },
   },
   {
-    sequelize,
+    sequelize: db.getSequelize(),
     modelName: 'Person',
     tableName: "person",
     timestamps: false,

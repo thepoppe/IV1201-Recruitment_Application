@@ -1,5 +1,4 @@
 const { Sequelize } = require("sequelize");
-const ModelLoader = require("../../models/dbModelLoader"); 
 
 let sequelize;
 
@@ -13,7 +12,6 @@ async function setupDatabase() {
   });
 
   await sequelize.authenticate();
-  ModelLoader.initModels(sequelize);
   await sequelize.sync({ force: true });
 }
 
@@ -25,6 +23,9 @@ async function closeDatabase() {
 }
 
 function getSequelize() {
+  if (!sequelize) {
+    throw new Error("Database not initialized. Call setupDatabase() first.");
+  }
   return sequelize;
 }
 
