@@ -1,8 +1,15 @@
 const ErrorHandler = require("../../../api/errorHandler/errorHandler");
 const GenericAppError = require("../../../utils/genericAppError");
+const LoggerMock = require("../../../utils/logger")
+
+jest.mock("../../../utils/logger");
+LoggerMock.mockImplementation(() => {
+    log: jest.fn()
+});
 
 describe("ErrorHandler", () => {
     let req, res, next;
+    const errorHandler = new ErrorHandler(new LoggerMock())
 
     beforeEach(() => {
         req = {};
@@ -16,7 +23,7 @@ describe("ErrorHandler", () => {
     test("should handle error with default status and message", () => {
         const error = GenericAppError.createInternalServerError("Test error");
 
-        ErrorHandler.handleError(error, req, res, next);
+        errorHandler.handleError(error, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({
@@ -28,7 +35,7 @@ describe("ErrorHandler", () => {
     test("should handle error with custom status and message", () => {
         const error = GenericAppError.createBadRequestError("Console message", null,"Custom error message");
 
-        ErrorHandler.handleError(error, req, res, next);
+        errorHandler.handleError(error, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({

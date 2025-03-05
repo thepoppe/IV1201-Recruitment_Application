@@ -54,8 +54,8 @@ describe("GenericAppError", () => {
         expect(error).toBeInstanceOf(GenericAppError);
         expect(error.message).toBe("Custom error");
         expect(error.status).toBe(418);
-        expect(error.originalError).toBeInstanceOf(Error);
-        expect(error.originalError.message).toBe("Original error");
+        expect(error.error).toBeInstanceOf(Error);
+        expect(error.error.message).toBe("Original error");
         expect(error.userMessage).toBe("Custom user message");
     });
 });

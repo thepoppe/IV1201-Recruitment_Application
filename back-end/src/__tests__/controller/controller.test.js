@@ -6,14 +6,6 @@ const GenericAppError = require("../../utils/genericAppError");
 
 jest.mock("bcrypt");
 jest.mock("../../integration/personDAO");
-jest.mock("../../config/database.js", () => ({
-    getSequelize: jest.fn(() => {
-      return {};
-    }),
-  }));
-jest.mock("../../models/dbModelLoader", () => ({
-    initModels: jest.fn(),
-}));
 
 
 describe("Controller", () => {
