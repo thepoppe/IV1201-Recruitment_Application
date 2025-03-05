@@ -1,4 +1,5 @@
 const PersonApi = require("./personAPI");
+const ApplicationAPI = require("./applicationAPI");
 
 /**
  * ApiLoader class for loading APIs
@@ -8,8 +9,8 @@ class ApiLoader {
    * Constructor for the ApiLoader
    * Creates a new array of APIs
    */
-  constructor() {
-    this.apis = [new PersonApi()];
+  constructor(logger) {
+    this.apis = [new PersonApi(logger), new ApplicationAPI()];
   }
 
   /**

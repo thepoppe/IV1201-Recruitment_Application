@@ -13,6 +13,7 @@ class PersonDTO {
         this.pnr = person.pnr;
         this.email = person.email;
         this.username = person.username;
+        this.role = person.role ? person.role.name : null;
     }
 }
 

@@ -2,11 +2,14 @@ export default {
   // Navigation
   navigation: {
     logo: "Nöjespark",
-    login: "Logga in",
-    logout: "Logga ut",
-    create_account: "Skapa konto",
     welcome: "Välkommen",
     profile: "Profil",
+    apply_for_position: "Ansök om en tjänst",
+    view_application: "Visa ansökan",
+    admin_area: "Adminområde",
+    logout: "Logga ut",
+    login: "Logga in",
+    create_account: "Skapa konto",
   },
 
   // Home Page
@@ -109,5 +112,78 @@ export default {
       required: "Lösenord är obligatoriskt",
       min: "Lösenord måste vara minst 8 tecken",
     },
+  },
+
+  // Profile Page
+  profile: {
+    loading: "Laddar användardata...",
+    application: "Din jobbansökan",
+    status: "Status",
+    submitted_on: "Inskickad den",
+    competences: "Kompetenser",
+    availability: "Tillgänglighet",
+    pnr: "Personnummer",
+    years: "år",
+  },
+
+  // Apply Job Page
+  applyJob: {
+    title: "Ansök om ett jobb",
+    subtitle:
+      "Fyll i dina kompetenser och tillgänglighet för att skicka in din ansökan.",
+    button: {
+      submit: "Skicka ansökan",
+      loading: "Skickar...",
+    },
+    success: "Din jobbansökan har skickats in framgångsrikt!",
+    error: "Något gick fel. Vänligen försök igen senare.",
+    fields: {
+      competences: "Dina kompetenser",
+      availability: "Din tillgänglighet",
+    },
+    placeholders: {
+      select_competence: "Välj en kompetens",
+      years_experience: "Antal års erfarenhet",
+    },
+    buttons: {
+      add_competence: "Lägg till kompetens",
+      add_availability: "Lägg till tillgänglighet",
+      remove: "Ta bort",
+    },
+    validation: {
+      competence_id: "Kompetens-ID måste vara ett giltigt nummer",
+      competence_required: "Minst en kompetens krävs",
+      years_experience: "Erfarenhet måste vara ett nummer",
+      years_experience_min: "Erfarenhet kan inte vara negativ",
+      years_experience_max: "Erfarenhet kan inte överstiga 50 år",
+      from_date: "Från datum måste vara ett giltigt datum",
+      from_date_required: "Från datum krävs",
+      to_date: "Till datum måste vara ett giltigt datum",
+      to_date_required: "Till datum krävs",
+      to_date_greater: "Till datum måste vara senare än Från datum",
+    },
+    applied: "Du har redan ansökt om ett jobb.",
+  },
+
+  // Admin Page
+  admin: {
+    title: "Admin - Jobbansökningar",
+    loading: "Laddar ansökningar...",
+    error_fetching: "Misslyckades med att hämta ansökningar.",
+    id: "ID",
+    applicant: "Sökande",
+    email: "E-post",
+    competences: "Kompetenser (år)",
+    availability: "Tillgänglighet",
+    status: "Status",
+    actions: "Åtgärder",
+    years: "år",
+    view_details: "Visa detaljer",
+    no_applications: "Inga ansökningar hittades.",
+    application_details: "Detaljer för Ansökan",
+    error_fetching_application: "Misslyckades med att hämta ansökan.",
+    accept: "Acceptera",
+    reject: "Avvisa",
+    error_updating_status: "Misslyckades med att uppdatera statusen.",
   },
 };

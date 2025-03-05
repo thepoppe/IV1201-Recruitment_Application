@@ -1,0 +1,154 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches: [ main, dev ]
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to Heroku
+    runs-on: ubuntu-latest
+
+    # Define environment based on the branch
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Set Heroku app names
+        id: set-app-names
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "BACKEND_APP=recruit-api-prod" >> $GITHUB_ENV
+          else
+            echo "BACKEND_APP=recruit-api-staging" >> $GITHUB_ENV
+          fi
+
+      - name: Login to Heroku
+        uses: docker/login-action@v2
+        with:
+          registry: registry.heroku.com
+          username: ${{ secrets.HEROKU_EMAIL }}
+          password: ${{ secrets.HEROKU_API_KEY }}
+
+      # Set up PostgreSQL database add-on
+      - name: Ensure PostgreSQL is Set Up
+        run: |
+          # Check if PostgreSQL is already added
+          if heroku addons:info heroku-postgresql --app ${{ env.BACKEND_APP }} > /dev/null 2>&1; then
+            echo "✅ PostgreSQL already exists. Skipping creation."
+          else
+            echo "🚀 Creating a new PostgreSQL database..."
+            heroku addons:create heroku-postgresql:essential-0 --app ${{ env.BACKEND_APP }}
+          fi
+          
+          # Wait for Heroku to update DATABASE_URL
+          sleep 5
+          echo "DATABASE_URL=$(heroku config:get DATABASE_URL --app ${{ env.BACKEND_APP }})" >> $GITHUB_ENV
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # Import database dump for first deployment (if needed)
+      - name: Import database dump (first deployment only)
+        if: github.run_number == 1
+        run: |
+          if [ -f ./dump.sql ]; then
+            if grep -q "PGDMP" ./dump.sql; then
+              PGPASSWORD=$(echo $DATABASE_URL | sed -E 's/.*:([^:]+)@.*/\1/') pg_restore --no-owner --no-privileges --dbname $DATABASE_URL ./dump.sql || true
+            else
+              PGPASSWORD=$(echo $DATABASE_URL | sed -E 's/.*:([^:]+)@.*/\1/') psql $DATABASE_URL -f ./dump.sql || true
+            fi
+          fi
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # Backend deployment
+      - name: Build and push backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./back-end
+          file: ./back-end/Dockerfile.web
+          push: true
+          tags: registry.heroku.com/${{ env.BACKEND_APP }}/web
+
+      - name: Set backend environment variables
+        run: |
+          heroku config:set JWT_SECRET=${{ secrets.JWT_SECRET }} --app ${{ env.BACKEND_APP }}
+          heroku config:set JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }} --app ${{ env.BACKEND_APP }}
+          heroku config:set NODE_ENV=production --app ${{ env.BACKEND_APP }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      - name: Release backend to Heroku
+        run: |
+          heroku container:release web --app ${{ env.BACKEND_APP }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+  deploy-frontend:
+    name: Deploy Frontend to Heroku
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set Heroku app names and API URLs
+        id: set-app-names
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "FRONTEND_APP=recruit-web-prod" >> $GITHUB_ENV
+            echo "API_URL=https://recruit-api-prod-296be8f05b81.herokuapp.com" >> $GITHUB_ENV
+          else
+            echo "FRONTEND_APP=recruit-web-staging" >> $GITHUB_ENV
+            echo "API_URL=https://recruit-api-staging-1372e4e3a3b5.herokuapp.com" >> $GITHUB_ENV
+          fi
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Login to Heroku Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: registry.heroku.com
+          username: ${{ secrets.HEROKU_EMAIL }}
+          password: ${{ secrets.HEROKU_API_KEY }}
+
+      # Set environment variables in Heroku BEFORE building
+      - name: Set frontend environment variables
+        run: |
+          heroku config:set NEXT_PUBLIC_API_URL=${{ env.API_URL }} --app ${{ env.FRONTEND_APP }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+      # Modify Dockerfile approach for better Next.js build-time env vars
+      - name: Create .env.production file
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ env.API_URL }}" > ./front-end/.env.production
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./front-end
+          file: ./front-end/Dockerfile.web
+          push: true
+          tags: registry.heroku.com/${{ env.FRONTEND_APP }}/web
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ env.API_URL }}
+
+      - name: Release frontend to Heroku
+        run: |
+          heroku container:release web --app ${{ env.FRONTEND_APP }}
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}

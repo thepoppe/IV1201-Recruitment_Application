@@ -28,7 +28,7 @@ export default function CreateAccount() {
       setError("");
 
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/person/create-account`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/person/create-account`,
         data
       );
       setSuccess(true);
@@ -66,7 +66,7 @@ export default function CreateAccount() {
   }
 
   return (
-    <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
+    <div className="w-full mx-auto max-w-2xl bg-white rounded-lg shadow-lg p-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-center text-gray-900">
           {dict.create_account.title}

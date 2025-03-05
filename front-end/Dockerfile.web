@@ -1,0 +1,43 @@
+FROM node:22.13.1 AS builder
+
+WORKDIR /app
+
+# Add build arguments for environment variables
+ARG NEXT_PUBLIC_API_URL
+
+# Set environment variables
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy project files
+COPY . .
+
+# Create a .env.production file from the build args
+RUN echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" > .env.production
+
+# Make sure tailwindcss is installed
+RUN npm install -D tailwindcss postcss autoprefixer
+
+# Build the Next.js app
+RUN npm run build
+
+# Production image, copy the built app
+FROM node:22.13.1-slim
+
+WORKDIR /app
+
+# Copy from builder stage
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.env.production ./
+
+# Don't use EXPOSE as it's not supported by Heroku
+# The app should listen on the port provided by the PORT environment variable
+
+# Start the app
+CMD ["npm", "start"]

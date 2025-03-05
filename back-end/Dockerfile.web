@@ -1,0 +1,14 @@
+FROM node:22.13.1
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+
+# Don't use EXPOSE as it's not supported by Heroku
+# The app should listen on the port provided by the PORT environment variable
+
+# Start the app
+CMD ["npm", "start"]

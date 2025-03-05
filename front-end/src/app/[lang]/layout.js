@@ -26,8 +26,10 @@ export default async function RootLayout({ children, params }) {
             </div>
 
             {/* Main Content */}
-            <main className="pt-[5rem] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-              {children}
+            <main className="px-4 sm:px-6 lg:px-8 min-h-screen pt-[6rem]">
+              <div className="flex justify-center max-w-7xl mx-auto py-6">
+                {children}
+              </div>
             </main>
           </LanguageProvider>
         </UserProvider>

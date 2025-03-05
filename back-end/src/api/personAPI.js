@@ -15,8 +15,8 @@ class PersonApi extends RequestHandler {
    * Sets the base path and creates a new controller
    * @param {string} basePath - The base path for the request
    */
-  constructor() {
-    super("/person");
+  constructor(logger) {
+    super("/person", logger);
     this.controller = new Controller();
   }
 
@@ -40,6 +40,7 @@ class PersonApi extends RequestHandler {
       async (req, res, next) => {
         try {
           const person = await this.controller.createPerson(req.body);
+          this.logSuccess(`Successfully created a profile for user ${person.id}`);
           this.sendSuccess(res, 201, person);  
         } 
         catch (error) {
@@ -59,6 +60,7 @@ class PersonApi extends RequestHandler {
       async (req, res, next) => {
       try { 
         const persons = await this.controller.findAllPersons();
+        this.logSuccess(`All users from the database returned`);
         this.sendSuccess(res, 200, persons);
       } 
       catch (error) {
@@ -79,6 +81,7 @@ class PersonApi extends RequestHandler {
       try {
         const person = await this.controller.login(req.body);
         const response = this.auth.addTokenToResponse(person);
+        this.logSuccess(`Successfully logged in person with id: ${person.id}`)
         this.sendSuccess(res, 200, response);
       } 
       catch (error) {
@@ -103,6 +106,7 @@ class PersonApi extends RequestHandler {
       async (req, res, next) => {
         try {
           const person = await this.controller.getPersonData(req.params.id);
+          this.logSuccess(`User ${req.decoded.id} successfully returned the profile for user ${person.id}`);
           this.sendSuccess(res, 200, person);
         } 
         catch (error) {
@@ -125,6 +129,7 @@ class PersonApi extends RequestHandler {
       async (req, res, next) => {
         try {
           const person = await this.controller.getPersonData(req.decoded.id);
+          this.logSuccess(`User ${req.decoded.id} successfully returned the profile for user ${person.id}`);
           this.sendSuccess(res, 200, person);
         } 
         catch (error) {
