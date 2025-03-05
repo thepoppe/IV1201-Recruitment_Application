@@ -2,11 +2,12 @@ const {DataTypes, Model} = require('sequelize');
 const Role = require('./roleModel');
 const db = require("../config/database");
 const bcrypt = require("bcrypt");
+const sequelize = db.getSequelize();
 
 /**
  * Person Model for the database
  */
-class Person extends Model {
+class Person extends Model {}
 
 /**
  * Initialize the Person model
