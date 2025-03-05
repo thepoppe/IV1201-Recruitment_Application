@@ -7,12 +7,14 @@ const GenericAppError = require("../../utils/genericAppError");
 const AuthHandler = require("../../api/auth/authorization");
 const ErrorHandler = require("../../api/errorHandler/errorHandler");
 const PersonValidator = require("../../utils/personValidator");
-const Person = require("../../models/personModel");
+const Logger = require("../../utils/logger");
+
 
 
 jest.mock("../../controller/controller");
 jest.mock("../../api/auth/authorization");
 jest.mock("../../utils/personValidator");
+jest.mock("../../utils/logger");
 
 /**
  * Had to manually mock the AuthHandler for the test to work
@@ -24,10 +26,16 @@ AuthHandler.mockImplementation(() => ({
         req.decoded = { id: 1, email: "john.doe@example.com" };
         next();
     }),
-    authorizePersonRequest: jest.fn(() => (req, res, next) => next()),
+    authorizePersonRequest: jest.fn(() => (req, res, next) => {
+        next();
+    }),
     extractUserData: jest.fn((person) => ({ id: person.id, email: person.email })),
     addTokenToResponse: jest.fn((person) => ({ token: "dummy-token", person }))
 }));
+
+Logger.mockImplementation(() => {
+    log: jest.fn()
+});
 
 
 describe("PersonApi", () => {
@@ -35,18 +43,22 @@ describe("PersonApi", () => {
     let personApi;
     let controllerMock;
     let authMock;
+    let errorHandler;
+    let logger;
 
     beforeAll(() => {
         app = express();
         app.use(express.json());
-        controllerMock = new Controller();
+        logger = new Logger();
+        errorHandler = new ErrorHandler(logger);
+        controllerMock = new Controller(logger);
         authMock = new AuthHandler();
-        personApi = new PersonApi();
+        personApi = new PersonApi(logger);
         personApi.controller = controllerMock;
         personApi.auth = authMock;
         personApi.registerRoutes();
         app.use("/api/person", personApi.router);
-        app.use(ErrorHandler.handleError);
+        app.use(errorHandler.handleError);
     });
 
     beforeEach(() => {
@@ -56,6 +68,10 @@ describe("PersonApi", () => {
         controllerMock.getPersonData.mockReset();
         controllerMock.login.mockReset();
         controllerMock.createPerson.mockReset();
+        authMock.authenticateUser.mockImplementation(((req, res, next) => {
+            req.decoded = { id: 1, email: "john.doe@example.com" };
+            next();
+        }))
     });
     
 
@@ -84,7 +100,7 @@ describe("PersonApi", () => {
             expect(response.body).toEqual({ success: true, data: personDTO });
             expect(controllerMock.createPerson).toHaveBeenCalledWith(newPerson);
         });
-        
+
         test("Validation error, should return 400 if invalid data is sent", async () => {
             PersonValidator.validateCreateAccount.mockImplementation((req, res, next) => next(GenericAppError.createValidationError()));
             await request(app)
@@ -113,13 +129,12 @@ describe("PersonApi", () => {
                 .expect(500);
             });
         });
-       
-    describe("POST /login", () => {
-        const loginData = { email: "john.doe@example.com", password: "Password1" };
-        
-        
-        test("Valid Request, should login a person", async () => {
-            const person = { id: 1, email: "john.doe@example.com" };
+        describe("POST /login", () => {
+            const loginData = { email: "john.doe@example.com", password: "Password1" };
+            
+            
+            test("Valid Request, should login a person", async () => {
+                const person = { id: 1, email: "john.doe@example.com" };
             const tokenResponse = { token: "token", person };
             controllerMock.login.mockResolvedValue(person);
             authMock.addTokenToResponse.mockReturnValue(tokenResponse);
@@ -133,34 +148,33 @@ describe("PersonApi", () => {
             expect(response.body).toEqual({ success: true, data: tokenResponse });
             expect(controllerMock.login).toHaveBeenCalledWith(loginData);
         });
-
         test("Authentication error, should return 401 if user email does not exist", async () => {
             controllerMock.login.mockRejectedValue(GenericAppError.createAuthenticationError());
-
+            
             const response = await request(app)
-                .post("/api/person/login")
-                .send(loginData)
-                .expect(401);
-
+            .post("/api/person/login")
+            .send(loginData)
+            .expect(401);
+            
             expect(response.body).toEqual({ success: false, error: expect.any(String) });
             expect(controllerMock.login).toHaveBeenCalledWith(loginData);
-        });
-
-        test("Validation error, should return 400 if bad input", async () => {
-            PersonValidator.validateLogin.mockImplementation((req, res, next) => next(GenericAppError.createValidationError()));
-
-            const response = await request(app)
+            });
+            
+            test("Validation error, should return 400 if bad input", async () => {
+                PersonValidator.validateLogin.mockImplementation((req, res, next) => next(GenericAppError.createValidationError()));
+                
+                const response = await request(app)
                 .post("/api/person/login")
                 .send(loginData)
                 .expect(400);
 
             expect(response.body).toEqual({ success: false, error: expect.any(String) });
             expect(controllerMock.login).not.toHaveBeenCalledWith(loginData);
-        });
-        test("General App error, should return 500 if addTokenToResponse fails", async () => {
-            authMock.addTokenToResponse.mockImplementation(() => { throw GenericAppError.createInternalServerError(); });
+            });
+            test("General App error, should return 500 if addTokenToResponse fails", async () => {
+                authMock.addTokenToResponse.mockImplementation(() => { throw GenericAppError.createInternalServerError(); });
         
-            const response = await request(app)
+                const response = await request(app)
                 .post("/api/person/login")
                 .send(loginData);
         
@@ -170,6 +184,7 @@ describe("PersonApi", () => {
         });
     });
 
+    
     describe("GET /me", () => {
         const person = { 
             id: 1, 
@@ -207,17 +222,15 @@ describe("PersonApi", () => {
     
     describe("GET /id/:id", () => {
         const person = { id: 1, name: "John", surname: "Doe", email: "john.doe@example.com" };
-        
+
         test("Valid request, should get authenticated person data", async () => {
-            authMock.authenticateUser.mockImplementation((req, res, next) => {next()});
-            authMock.authorizePersonRequest.mockImplementation((req, res, next) => {next()});
             controllerMock.getPersonData.mockResolvedValue(person);
-            
+    
             const response = await request(app)
-            .get(`/api/person/id/${person.id}`)
-            .expect(200);
-            
-            expect(response.body).toEqual({success:true, data: person});
+                .get(`/api/person/id/${person.id}`)
+                .expect(200);
+    
+            expect(response.body).toEqual({ success: true, data: person });
             expect(controllerMock.getPersonData).toHaveBeenCalled();
         });
 
@@ -246,15 +259,16 @@ describe("PersonApi", () => {
                 .expect(500);
             expect(controllerMock.getPersonData).toHaveBeenCalled();
         });
+
         test("Invalid Authorization, should return 401 if auth throws error before controller throws 500", async () => {
             /**
-             * Separate PersonAPI route since the authorize middleware needs to be binded to the controller
-             */
+             * Separate PersonAPI route since the Authorize Person Request middleware needs to be bound to the controller
+            */
             const tempApp = express();
             tempApp.use(express.json());
-            const tempControllerMock = new Controller();
+            const tempControllerMock = new Controller(logger);
             const tempAuthMock = new AuthHandler();
-            const tempPersonApi = new PersonApi();
+            const tempPersonApi = new PersonApi(logger);
             tempAuthMock.authenticateUser.mockImplementation((req, res, next) => {next()});
             tempAuthMock.authorizePersonRequest.mockImplementation((controller) => {
                 return (req, res, next) => next(GenericAppError.createUnauthorizedError());
@@ -264,7 +278,7 @@ describe("PersonApi", () => {
             tempPersonApi.auth = tempAuthMock;
             tempPersonApi.registerRoutes();
             tempApp.use("/api/person", tempPersonApi.router);
-            tempApp.use(ErrorHandler.handleError);
+            tempApp.use(errorHandler.handleError);
 
             const response = await request(tempApp)
                 .get(`/api/person/id/${person.id}`)
