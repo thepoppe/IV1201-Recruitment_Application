@@ -3,15 +3,18 @@
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { createAccountSchema } from "@/validations/createAccountSchema";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useUser } from "@/contexts/UserContext";
 
 export default function CreateAccount() {
   const { dict } = useLanguage(); // Get translations
+  const { login } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loginCredentials, setLoginCredentials] = useState(null);
 
   const {
     register,
@@ -26,6 +29,7 @@ export default function CreateAccount() {
     try {
       setIsSubmitting(true);
       setError("");
+      setLoginCredentials(data);
 
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/person/create-account`,
@@ -39,31 +43,12 @@ export default function CreateAccount() {
     }
   };
 
-  if (success) {
-    return (
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 text-center">
-        <div className="mb-4">
-          <svg
-            className="mx-auto h-12 w-12 text-green-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 13l4 4L19 7"
-            ></path>
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          {dict.create_account.success.title}
-        </h2>
-        <p className="text-gray-600">{dict.create_account.success.message}</p>
-      </div>
-    );
-  }
+  // Login user on successful account creation
+  useEffect(() => {
+    if (success) {
+      login(loginCredentials.email, loginCredentials.password);
+    }
+  }, [success]);
 
   return (
     <div className="w-full mx-auto max-w-2xl bg-white rounded-lg shadow-lg p-8">
