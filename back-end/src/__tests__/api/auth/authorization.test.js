@@ -106,5 +106,34 @@ describe("Auth", () => {
         });
 
     });
+    describe("authorizeRecruiter", () => {
+        let req, res, next, controller;
+        beforeEach(() => {
+            req = {};
+            res = {};
+            next = jest.fn();
+            controller = new Controller();
+        });
+
+        test("should authorize the person request and call next without an error", async () => {
+            req = { params: { id: 1 }, decoded: { id: 2 } };
+            controller.getUserRole.mockReturnValue("recruiter");
+            await auth.authorizeRecruiter(controller)(req, res, next);
+            expect(next).not.toHaveBeenCalledWith(expect.any(GenericAppError));
+        });
+        test("should not authorize the person request and call enxt with an error", async () => {
+            req = { params: { id: 1 }, decoded: { id: 2 } };
+            controller.getUserRole.mockReturnValue("applicant");
+            await auth.authorizeRecruiter(controller)(req, res, next);
+            expect(next).toHaveBeenCalledWith(expect.any(GenericAppError));
+        });
+        test("should not authorize the person request and call enxt with an error", async () => {
+            req = { params: { id: 1 }, decoded: { id: 2 } };
+            controller.getUserRole.mockReturnValue(new Error());
+            await auth.authorizeRecruiter(controller)(req, res, next);
+            expect(next).toHaveBeenCalledWith(expect.any(GenericAppError));
+        });
+
+    });
     
 });

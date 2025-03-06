@@ -33,9 +33,9 @@ AuthHandler.mockImplementation(() => ({
     addTokenToResponse: jest.fn((person) => ({ token: "dummy-token", person }))
 }));
 
-Logger.mockImplementation(() => {
+Logger.mockImplementation(() => ({
     log: jest.fn()
-});
+}));
 
 
 describe("PersonApi", () => {
