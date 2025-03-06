@@ -22,6 +22,11 @@ async function closeDatabase() {
     sequelize = null;
   }
 }
+async function clearDatabase(){
+  if (sequelize){
+    await sequelize.drop();
+  }
+}
 
 function getSequelize() {
   if (!sequelize) {
@@ -35,4 +40,5 @@ module.exports = {
   syncDatabase,
   closeDatabase,
   getSequelize,
+  clearDatabase,
 };

@@ -4,6 +4,7 @@
 jest.resetModules();
 jest.doMock("../../config/database.js", () => require("../mocks/databaseMock.js"));
 const db = require("../../config/database.js");
+const {clearDatabase} = require("../mocks/databaseMock.js")
 
 let PersonDAO;
 let Person;
@@ -41,7 +42,7 @@ describe("PersonDAO", () => {
    * Removes the created Role, terminates connection
    */
   afterAll(async () => {
-    await Role.destroy({where:{}})
+    await clearDatabase()
     await db.closeDatabase();
     personDAO = null;
   });
