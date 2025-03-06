@@ -31,6 +31,8 @@ describe("PersonDAO", () => {
     PersonDAO = require("../../integration/personDAO");
     personDAO = new PersonDAO();
 
+    await db.getSequelize().sync({ force: true });
+    
     await Role.create({ role_id: 2, name: "applicant" });
     
   });

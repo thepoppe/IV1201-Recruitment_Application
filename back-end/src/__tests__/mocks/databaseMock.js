@@ -4,14 +4,15 @@ let sequelize;
 
 async function setupDatabase() {
 
-  sequelize = new Sequelize("test_db", "postgres", "postgres", {
-    host: "localhost",
-    port: 5433,
-    dialect: "postgres",
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: ':memory:',
     logging: false,
   });
-
   await sequelize.authenticate();
+}
+
+async function syncDatabase() {
   await sequelize.sync({ force: true });
 }
 
@@ -31,6 +32,7 @@ function getSequelize() {
 
 module.exports = {
   setupDatabase,
+  syncDatabase,
   closeDatabase,
   getSequelize,
 };
