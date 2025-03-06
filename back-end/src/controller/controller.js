@@ -142,7 +142,7 @@ class Controller {
       return new PersonDTO(user);
     } catch (error) {
       throw GenericAppError.createInternalServerError(
-        `Unexpected error while retrieving person [${person.id}]`,
+        `Unexpected error while retrieving person [${person_id}]`,
         error
       );
     }
@@ -161,7 +161,7 @@ class Controller {
       return role.name;
     } catch (error) {
       throw GenericAppError.createInternalServerError(
-        `Unexpected error while retrieving role of person [${person.id}]`,
+        `Unexpected error while retrieving role of person [${person_id}]`,
         error
       );
     }
