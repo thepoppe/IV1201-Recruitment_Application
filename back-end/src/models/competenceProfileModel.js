@@ -34,7 +34,6 @@ CompetenceProfile.init(
   }
 );
 
-// ✅ Keep a one-way association (CompetenceProfile -> Competence)
 CompetenceProfile.belongsTo(Competence, {
   foreignKey: "competence_id",
   as: "competence",
