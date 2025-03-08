@@ -41,6 +41,7 @@ describe("Testing Backend full flow use cases with dummy database",()=>{
 
     beforeAll(async () => {
         await db.init();
+        await db.clearDatabase();
         Person = require("../models/personModel");
         Competence = require("../models/competenceModel");
         CompetenceProfile = require("../models/competenceProfileModel");
@@ -63,6 +64,7 @@ describe("Testing Backend full flow use cases with dummy database",()=>{
 
     afterAll(async () =>{
         await appinstance.close()
+        await db.clearDatabase();
         await db.closeDatabase();
     });
 

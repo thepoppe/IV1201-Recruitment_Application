@@ -27,6 +27,7 @@ describe("PersonDAO", () => {
    */
   beforeAll(async () => {
     await db.setupDatabase();
+    await db.clearDatabase();
     Role = require("../../models/roleModel");
     Person = require("../../models/personModel");
     PersonDAO = require("../../integration/personDAO");
@@ -42,7 +43,7 @@ describe("PersonDAO", () => {
    * Removes the created Role, terminates connection
    */
   afterAll(async () => {
-    await clearDatabase()
+    await db.clearDatabase();
     await db.closeDatabase();
     personDAO = null;
   });

@@ -37,6 +37,8 @@ describe("ApplicationDAO", () => {
    */
   beforeAll(async () => {
     await db.setupDatabase();
+    await db.clearDatabase();
+
     Application = require("../../models/applicationModel");
     Role = require("../../models/roleModel");
     Person = require("../../models/personModel");
@@ -67,7 +69,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-    await clearDatabase();
+    await db.clearDatabase();
     await db.closeDatabase();
 });
     describe("applyForJobTransactionally",() =>{
