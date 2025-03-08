@@ -156,7 +156,8 @@ export function UserProvider({ children }) {
           fetchUserApplication(response.data.data.token);
         }
 
-        router.push("/");
+        // Redirect to home page after successful login (router.push is not working correctly)
+        window.location.href = "/"; // router.push("/");
       } else {
         setError("Invalid credentials");
       }
@@ -180,7 +181,7 @@ export function UserProvider({ children }) {
     setToken(null);
     setApplication(null);
     Cookies.remove("token");
-    router.push("/");
+    window.location.href = "/"; // router.push("/");
   };
 
   return (
