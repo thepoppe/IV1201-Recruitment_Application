@@ -1,5 +1,24 @@
 import Joi from "joi";
 
+/**
+ * Creates a Joi validation schema for job applications.
+ * 
+ * This function generates a Joi validation schema for validating job application data.
+ * The schema enforces validation rules for competences and availability periods,
+ * with localized error messages based on the provided dictionary.
+ * 
+ * The schema validates:
+ * - Competences: Array of objects with competence_id and years_of_experience
+ *   - competence_id: Required integer
+ *   - years_of_experience: Required number between 0 and 50
+ * - Availabilities: Array of objects with from_date and to_date
+ *   - from_date: Required valid date
+ *   - to_date: Required valid date that must be after from_date
+ * 
+ * @function applyJobSchema
+ * @param {Object} dict - Dictionary object containing localized validation messages
+ * @returns {Joi.ObjectSchema} A Joi schema for validating job application data
+ */
 export const applyJobSchema = (dict) =>
   Joi.object({
     competences: Joi.array()

@@ -3,10 +3,21 @@ import { useUser } from "@/contexts/UserContext";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+/**
+ * ProfilePage component displays user profile information and application status.
+ * 
+ * This client-side component shows the user's personal information and, if applicable,
+ * their job application details including status, competences, and availability periods.
+ * The component uses visual cues (colored borders) to indicate application status.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered ProfilePage component
+ */
 export default function ProfilePage() {
   const { user, application } = useUser();
   const { dict } = useLanguage();
 
+  // Show loading state if user data is not yet available
   if (!user) {
     return <p className="text-center mt-10">{dict.profile.loading}</p>;
   }
