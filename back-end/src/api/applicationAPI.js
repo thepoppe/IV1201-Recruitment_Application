@@ -1,6 +1,6 @@
 const RequestHandler = require("./requestHandler");
 const Controller = require("../controller/controller");
-const { validateApplyForJob } = require("../utils/applicationValidator");
+const { validateApplyForJob, validateUpdateStatus } = require("../utils/applicationValidator");
 
 class ApplicationAPI extends RequestHandler {
   constructor() {
@@ -133,6 +133,7 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.patch(
       "/:id/status",
+      validateUpdateStatus,
       this.auth.authenticateUser.bind(this.auth),
       this.auth.authorizeRecruiter(this.controller), // Restrict to recruiters
       async (req, res, next) => {

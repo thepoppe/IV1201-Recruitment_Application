@@ -17,6 +17,8 @@ describe("CompetenceDAO", () => {
      */
     beforeAll(async () => {
       await db.setupDatabase();
+      await db.clearDatabase();
+
       Competence = require("../../models/competenceModel");
       const CompetenceDAO = require("../../integration/competenceDAO");
       competenceDAO = new CompetenceDAO();
@@ -31,7 +33,7 @@ describe("CompetenceDAO", () => {
      * Removes the created Role, terminates connection
      */
     afterAll(async () => {
-      await clearDatabase()
+      await db.clearDatabase()
       await db.closeDatabase();
       personDAO = null;
     });

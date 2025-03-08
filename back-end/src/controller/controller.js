@@ -336,7 +336,7 @@ class Controller {
       }
 
       if (!["accepted", "rejected"].includes(status)) {
-        return next(GenericAppError.createBadRequestError("Invalid status"));
+        throw GenericAppError.createBadRequestError("Invalid status");
       }
 
       application.status = status;

@@ -9,6 +9,10 @@ jobs:
     name: Test and Lint
     runs-on: ubuntu-latest
     
+    env:
+      JWT_SECRET: dummysecret
+      JWT_EXPIRES_IN: 1h
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -35,7 +39,7 @@ jobs:
       # Backend tests (when setup is completed)
       - name: Run backend tests
         working-directory: ./back-end
-        run: npm test
+        run: npm run test:ci
         continue-on-error: false
         
   build:
