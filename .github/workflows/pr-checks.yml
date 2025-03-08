@@ -9,6 +9,10 @@ jobs:
     name: Test and Lint
     runs-on: ubuntu-latest
     
+    env:
+      JWT_SECRET: dummysecret
+      JWT_EXPIRES_IN: 1h
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
