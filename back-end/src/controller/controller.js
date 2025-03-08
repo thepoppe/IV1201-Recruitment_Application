@@ -57,6 +57,7 @@ class Controller {
       const user = await this.personDAO.create(person);
       return new PersonDTO(user);
     } catch (error) {
+      console.log("Error for create account: ", error);
       if (error instanceof GenericAppError) throw error;
       else
         throw GenericAppError.createInternalServerError(
