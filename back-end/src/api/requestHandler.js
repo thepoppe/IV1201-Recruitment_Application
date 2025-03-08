@@ -43,7 +43,11 @@ class RequestHandler {
    * @param {string} msg - The message to log 
    */
   logSuccess(msg){
-    this.logger.log("info", msg);
+    try {
+      this.logger.log("info", msg);
+    } catch (error) {
+      throw GenericAppError.createInternalServerError("Logger failed", error)
+    }
   }
 
   /**

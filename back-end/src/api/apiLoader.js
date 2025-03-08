@@ -10,7 +10,7 @@ class ApiLoader {
    * Creates a new array of APIs
    */
   constructor(logger) {
-    this.apis = [new PersonApi(logger), new ApplicationAPI()];
+    this.apis = [new PersonApi(logger), new ApplicationAPI(logger)];
   }
 
   /**
