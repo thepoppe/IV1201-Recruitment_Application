@@ -78,7 +78,7 @@ class AuthHandler{
             try {
                 const role = await controller.getUserRole(req.decoded.id);
                 if (role !== 'recruiter') {
-                    return next(GenericAppError.createUnauthorizedError(`User[${req.decoded.id}, ${role}] tried accessing user [${req.params.id}]`));
+                    return next(GenericAppError.createAuthorizationError(`User[${req.decoded.id}, ${role}] tried accessing user [${req.params.id}]`));
                 }
             } 
             catch (error) {

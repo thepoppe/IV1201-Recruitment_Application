@@ -93,7 +93,7 @@ describe("Testing Backend full flow use cases with dummy database",()=>{
         test("Should return 404 with an invalid route", async () => {
             await request(app).get("/test").expect(404);
         });
-        test("Should return 401  if not authenticated", async () => {
+        test("Should return 401  if not token is missing", async () => {
             await request(app).get("/api/person/me").expect(401);
         });
         test("Should return 401  if not authenticated", async () => {
@@ -151,7 +151,7 @@ describe("Testing Backend full flow use cases with dummy database",()=>{
             const res= await request(app)
             .get("/api/application/all")
             .set("Authorization", `Bearer ${token}`)
-            .expect(401);
+            .expect(403);
         });
 
         test("should have 0 applications", async () => {
