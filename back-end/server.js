@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 const ApiLoader = require("./src/api/apiLoader");
 const ErrorHandler = require("./src/api/errorHandler/errorHandler");
 const Logger = require("./src/utils/logger");
@@ -15,6 +16,7 @@ class Server {
    */
   constructor() {
     this.app = express();
+    this.server = null;
     this.logger = new Logger();
     this.httpLogger = new HttpLogger(this.logger);
     this.apiLoader = new ApiLoader(this.logger);
@@ -41,6 +43,11 @@ class Server {
         allowedHeaders: ["Content-Type", "Authorization"],
       })
     );
+    this.app.use(rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+      message: "Too many requests, please try again after 15 minutes",
+    }))
     this.app.use(this.httpLogger.logHttpRequest);
   }
 
@@ -54,11 +61,24 @@ class Server {
 
     this.app.use(this.errorHandler.handleError);
 
-    this.app.listen(port, () => {
+    this.server = this.app.listen(port, () => {
       this.logger.log("info", `Server running on port ${port}`);
     });
+  }
+
+  /**
+   * Close the server
+   */
+  async close() {
+    if (this.server) {
+      this.server.close(() => {
+        this.logger.log("info", "Server closed");
+      });
+    }
   }
 }
 
 const server = new Server();
 server.start();
+
+module.exports = server;

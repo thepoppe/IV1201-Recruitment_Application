@@ -76,6 +76,7 @@ describe("applicationApi", () => {
 
     beforeEach(() => {
         ApplicationValidatorMock.validateApplyForJob.mockImplementation((req, res, next) => next());
+        ApplicationValidatorMock.validateUpdateStatus.mockImplementation((req, res, next) => next());
         controllerMock.applyForJob.mockReset();
         controllerMock.listAllCompetences.mockReset();
         controllerMock.getUserApplication.mockReset();
@@ -371,16 +372,27 @@ describe("applicationApi", () => {
 
         describe("updateApplicationStatus", () => {
             test("should update application status", async () => {
-                const updatedApplication = { id: 1, status: "approved" };
+                const updatedApplication = { id: 1, status: "accepted" };
                 controllerMock.updateApplicationStatus.mockResolvedValue(updatedApplication);
 
                 const response = await request(app)
                     .patch("/api/application/1/status")
-                    .send({ status: "approved" })
+                    .send({ status: "accepted" })
                     .expect(200);
 
                 expect(response.body).toEqual({ success: true, data: updatedApplication });
-                expect(controllerMock.updateApplicationStatus).toHaveBeenCalledWith("1", "approved");
+                expect(controllerMock.updateApplicationStatus).toHaveBeenCalledWith("1", "accepted");
+            });
+            test("should update application status", async () => {
+                const badStatus= "invalid status"
+                ApplicationValidatorMock.validateUpdateStatus.mockImplementation((req, res, next) => {
+                    next(GenericAppError.createValidationError());
+                });
+
+                const response = await request(app)
+                    .patch("/api/application/1/status")
+                    .send({ status: badStatus })
+                    .expect(400);
             });
 
             test("should return 401 if authentication fails", async () => {
@@ -390,7 +402,7 @@ describe("applicationApi", () => {
 
                 const response = await request(app)
                     .patch("/api/application/1/status")
-                    .send({ status: "approved" })
+                    .send({ status: "accepted" })
                     .expect(401);
 
                 expect(response.body).toEqual({ success: false, error: authenticationErrorMsg });
@@ -402,11 +414,11 @@ describe("applicationApi", () => {
 
                 const response = await request(app)
                     .patch("/api/application/1/status")
-                    .send({ status: "approved" })
+                    .send({ status: "accepted" })
                     .expect(500);
 
                 expect(response.body).toEqual({ success: false, error: internalErrorMsg });
-                expect(controllerMock.updateApplicationStatus).toHaveBeenCalledWith("1", "approved");
+                expect(controllerMock.updateApplicationStatus).toHaveBeenCalledWith("1", "accepted");
             });
 
             test("should return 500 if controller throws an error", async () => {
@@ -414,11 +426,11 @@ describe("applicationApi", () => {
 
                 const response = await request(app)
                     .patch("/api/application/1/status")
-                    .send({ status: "approved" })
+                    .send({ status: "accepted" })
                     .expect(500);
 
                 expect(response.body).toEqual({ success: false, error: unexpectedErrorMsg });
-                expect(controllerMock.updateApplicationStatus).toHaveBeenCalledWith("1", "approved");
+                expect(controllerMock.updateApplicationStatus).toHaveBeenCalledWith("1", "accepted");
             });
         });
     })
@@ -487,10 +499,10 @@ describe("applicationApi", () => {
 
                 const response = await request(newApp)
                     .patch("/api/application/1/status")
-                    .send({ status: "approved" })
+                    .send({ status: "accepted" })
                     .expect(401);
 
-                    expect(response.body).toEqual({ success: false, error:errorMsg });
+                expect(response.body).toEqual({ success: false, error:errorMsg });
                 expect(newControllerMock.updateApplicationStatus).not.toHaveBeenCalled();
             });
 

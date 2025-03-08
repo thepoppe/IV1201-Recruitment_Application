@@ -35,7 +35,7 @@ jobs:
       # Backend tests (when setup is completed)
       - name: Run backend tests
         working-directory: ./back-end
-        run: npm test
+        run: npm test:ci
         continue-on-error: false
         
   build:

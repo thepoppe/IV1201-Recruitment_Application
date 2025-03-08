@@ -3,17 +3,20 @@ const { Sequelize } = require("sequelize");
 let sequelize;
 
 async function setupDatabase() {
+  if (!sequelize) {
+    sequelize = new Sequelize({
+      dialect: "sqlite",
+      storage: ":memory:",
+      logging: false,
+    });
 
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: ':memory:',
-    logging: false,
-  });
-  await sequelize.authenticate();
+    await sequelize.authenticate();
+  }
 }
 
 async function syncDatabase() {
-  await sequelize.sync({ force: true });
+  if (!sequelize) await setupDatabase();
+    await sequelize.sync({ force: true });
 }
 
 async function closeDatabase() {
@@ -34,8 +37,12 @@ function getSequelize() {
   }
   return sequelize;
 }
+async function init() {
+  await setupDatabase();
+}
 
 module.exports = {
+  init,
   setupDatabase,
   syncDatabase,
   closeDatabase,
