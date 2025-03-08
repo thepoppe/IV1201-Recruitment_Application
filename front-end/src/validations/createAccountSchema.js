@@ -1,5 +1,24 @@
 import Joi from "joi";
 
+/**
+ * Creates a Joi validation schema for user account creation.
+ * 
+ * This function generates a Joi validation schema for validating user registration data.
+ * The schema enforces validation rules for name, surname, personal number (pnr),
+ * email, and password with localized error messages from the provided dictionary.
+ * 
+ *   The schema validates:
+ * - name: Required string between 2-50 characters
+ * - surname: Required string between 2-50 characters
+ * - pnr: Required string in format "YYYYMMDD-XXXX" 
+ * - email: Required valid email address
+ * - password: Required string with at least 8 characters, containing at least 
+ *   one lowercase letter, one uppercase letter, and one digit
+ * 
+ * @function createAccountSchema
+ * @param {Object} dict - Dictionary object containing localized validation messages
+ * @returns {Joi.ObjectSchema} A Joi schema for validating account creation data
+ */
 export const createAccountSchema = (dict) =>
   Joi.object({
     name: Joi.string().required().min(2).max(50).messages({

@@ -6,6 +6,16 @@ import { useUser } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+/**
+ * AdminPage component for recruiters to view and manage job applications.
+ * 
+ * This client-side component fetches and displays all job applications in a table format.
+ * It includes authentication checks to ensure only users with the 'recruiter' role can access it.
+ * If a non-recruiter attempts to access this page, they are redirected to the home page.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered AdminPage component
+ */
 export default function AdminPage() {
   const { user, token } = useUser();
   const { dict, lang } = useLanguage();
@@ -14,6 +24,17 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  /**
+   * Effect hook that handles authorization and fetches application data.
+   *
+   * Checks if the user has recruiter role and redirects if not.
+   * Fetches all applications from the API if the user is authorized.
+   *
+   * @effect
+   * @dependency {Object} user - Current user object
+   * @dependency {string} token - Authentication token
+   * @dependency {Object} router - Next.js router
+   */
   useEffect(() => {
     if (!user || !token) return; // Ensure user and token are available
 
@@ -22,6 +43,13 @@ export default function AdminPage() {
       return;
     }
 
+    /**
+     * Fetches all applications from the API
+     *
+     * @async
+     * @function fetchApplications
+     * @returns {Promise<void>}
+     */
     const fetchApplications = async () => {
       try {
         const response = await axios.get(

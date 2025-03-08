@@ -9,6 +9,16 @@ import { applyJobSchema } from "@/validations/applyJobSchema";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 
+/**
+ * ApplyJobPage component for users to submit job applications.
+ * 
+ * This client-side component provides a form for users to submit their job applications.
+ * It allows users to add multiple competences and availability periods.
+ * The component validates form data using Joi schema validation and handles form submission.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered ApplyJobPage component
+ */
 export default function ApplyJobPage() {
   const { dict, lang } = useLanguage();
   const { token, fetchUserApplication, application } = useUser();
@@ -17,6 +27,9 @@ export default function ApplyJobPage() {
   const [error, setError] = useState(null);
   const [competences, setCompetences] = useState([]);
 
+  /**
+   * Form configuration using react-hook-form with Joi validation
+   */
   const {
     register,
     handleSubmit,
@@ -33,19 +46,38 @@ export default function ApplyJobPage() {
     },
   });
 
+  /**
+   * Field array configuration for dynamic competence fields
+   */
   const {
     fields: competenceFields,
     append: addCompetence,
     remove: removeCompetence,
   } = useFieldArray({ control, name: "competences" });
+
+  /**
+   * Field array configuration for dynamic availability fields
+   */
   const {
     fields: availabilityFields,
     append: addAvailability,
     remove: removeAvailability,
   } = useFieldArray({ control, name: "availabilities" });
 
-  // Fetch competences from API
+  /**
+   * Fetches available competences from the API on component mount
+   *
+   * @effect
+   * @dependency {string} token - Authentication token
+   */
   useEffect(() => {
+    /**
+     * Fetches competence options from the API
+     *
+     * @async
+     * @function fetchCompetences
+     * @returns {Promise<void>}
+     */
     const fetchCompetences = async () => {
       try {
         const response = await axios.get(
@@ -62,7 +94,19 @@ export default function ApplyJobPage() {
     fetchCompetences();
   }, [token]);
 
-  // Submission handler
+  /**
+   * Handles form submission to create a new job application
+   *
+   * Submits the form data to the API, updates the UI on success,
+   * and handles error states appropriately.
+   *
+   * @async
+   * @function onSubmit
+   * @param {Object} data - Form data containing competences and availabilities
+   * @param {Array} data.competences - List of competences with ID and years of experience
+   * @param {Array} data.availabilities - List of availability periods with from and to dates
+   * @returns {Promise<void>}
+   */
   const onSubmit = async (data) => {
     setLoading(true);
     setError(null);
@@ -229,15 +273,16 @@ export default function ApplyJobPage() {
 
           {/* Submit Button Section */}
           <div className="pt-4">
-            <button
+            <Button
               type="submit"
               disabled={loading || !isValid}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition font-medium disabled:opacity-50"
+              variant="primary"
+              className="w-full font-medium"
             >
               {loading
                 ? dict.applyJob.button.loading
                 : dict.applyJob.button.submit}
-            </button>
+            </Button>
           </div>
         </form>
       )}

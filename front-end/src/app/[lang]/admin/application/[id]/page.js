@@ -6,6 +6,16 @@ import { useRouter, useParams } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import Button from "@/components/ui/Button";
 
+/**
+ * ApplicationPage component for recruiters to view and manage individual job applications.
+ * 
+ * This client-side component fetches and displays details of a specific application.
+ * It provides functionality for recruiters to accept or reject applications.
+ * Only users with the 'recruiter' role can access this page.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered ApplicationPage component
+ */
 export default function ApplicationPage() {
   const { user, token } = useUser();
   const { dict } = useLanguage();
@@ -16,6 +26,18 @@ export default function ApplicationPage() {
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(false);
 
+  /**
+   * Effect hook that handles authorization and fetches application data.
+   *
+   * Checks if the user has recruiter role and redirects if not.
+   * Fetches the specific application from the API using the ID from the URL parameters.
+   *
+   * @effect
+   * @dependency {Object} user - Current user object
+   * @dependency {string} token - Authentication token
+   * @dependency {string} id - Application ID from URL parameters
+   * @dependency {Object} router - Next.js router
+   */
   useEffect(() => {
     if (!user || !token) return; // Ensure user and token are available
 
@@ -24,6 +46,13 @@ export default function ApplicationPage() {
       return;
     }
 
+    /**
+     * Fetches a specific application from the API
+     *
+     * @async
+     * @function fetchApplication
+     * @returns {Promise<void>}
+     */
     const fetchApplication = async () => {
       try {
         const response = await axios.get(
@@ -45,6 +74,17 @@ export default function ApplicationPage() {
     fetchApplication();
   }, [user, token, id, router]);
 
+  /**
+   * Updates the status of an application to either accepted or rejected.
+   *
+   * Prompts the user for confirmation before proceeding with the update.
+   * Updates the application state with the response from the API.
+   *
+   * @async
+   * @function updateStatus
+   * @param {string} newStatus - The new status to set ('accepted' or 'rejected')
+   * @returns {Promise<void>}
+   */
   const updateStatus = async (newStatus) => {
     // Confirm status update
     if (!confirm(`Are you sure you want to ${newStatus == "accepted" ? "accept" : "reject"} this application?`)) {
@@ -118,9 +158,9 @@ export default function ApplicationPage() {
           >
             {dict.admin.accept}
           </Button>
-          <Button 
+          <Button
             variant="danger"
-            disabled={updating || application?.status === "rejected"} 
+            disabled={updating || application?.status === "rejected"}
             onClick={() => updateStatus("rejected")}
           >
             {dict.admin.reject}
