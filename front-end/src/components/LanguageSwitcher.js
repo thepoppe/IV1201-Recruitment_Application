@@ -4,17 +4,51 @@ import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+/**
+ * Array of supported languages with their metadata
+ * 
+ * @const {Array<Object>} languages
+ * @property {string} code - Language code (e.g., "en", "sv")
+ * @property {string} label - Display name of the language
+ * @property {string} flag - Path to the flag image
+ */
 const languages = [
   { code: "en", label: "English", flag: "/flags/us.svg" },
   { code: "sv", label: "Svenska", flag: "/flags/se.svg" },
 ];
 
+/**
+ * LanguageSwitcher component provides a dropdown interface for changing the application language.
+ * 
+ * This client-side component renders a button showing the current language with its flag,
+ * which opens a dropdown menu of available languages when clicked. Selecting a language
+ * updates the URL path to reflect the new language while preserving the current route.
+ * 
+ * The component handles:
+ * - Displaying the current language with its flag
+ * - Toggling the dropdown menu
+ * - Changing the application language while preserving the current path
+ * - Navigation to the same page in the new language
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered LanguageSwitcher component
+ */
 export default function LanguageSwitcher() {
   const { lang } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
+  /**
+   * Handles language change selection from the dropdown
+   *
+   * Updates the URL to use the new language code while preserving
+   * the current path, then navigates to the new URL.
+   *
+   * @function
+   * @param {string} newLang - The language code to switch to
+   * @returns {void}
+   */
   const handleLanguageChange = (newLang) => {
     if (newLang === lang) return;
 

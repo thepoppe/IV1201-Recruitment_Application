@@ -3,6 +3,18 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+/**
+ * GuestMenu component that displays navigation options for unauthenticated users.
+ * 
+ * This client-side component renders in the navigation bar when no user is logged in.
+ * It provides links to the login and account creation pages, with proper localization
+ * for link paths and button text. The component uses different button styles to
+ * visually distinguish between the primary action (create account) and the secondary
+ * action (login).
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered GuestMenu component with login and create account buttons
+ */
 export default function GuestMenu() {
   const { dict, lang } = useLanguage();
 

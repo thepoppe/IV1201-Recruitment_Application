@@ -1,18 +1,37 @@
 "use client";
-
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { createAccountSchema } from "@/validations/createAccountSchema";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useUser } from "@/contexts/UserContext";
+import Button from "@/components/ui/Button";
 
+/**
+ * CreateAccount component handles user registration functionality.
+ * 
+ * This client-side component provides a form for users to create a new account.
+ * It handles form validation, submission, error handling, and automatic login
+ * upon successful account creation.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered CreateAccount form component
+ */
 export default function CreateAccount() {
   const { dict } = useLanguage(); // Get translations
+  const { login } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loginCredentials, setLoginCredentials] = useState(null);
 
+  /**
+   * Form handling configuration using react-hook-form
+   * @const {Object} register - Method to register form inputs
+   * @const {Function} handleSubmit - Form submission handler
+   * @const {Object} errors - Contains validation errors
+   */
   const {
     register,
     handleSubmit,
@@ -22,10 +41,23 @@ export default function CreateAccount() {
     mode: "onBlur",
   });
 
+  /**
+   * Handles form submission to create a new user account.
+   *
+   * @async
+   * @function onSubmit
+   * @param {Object} data - Form data containing user registration information
+   * @param {string} data.email - User's email address
+   * @param {string} data.password - User's chosen password
+   * @param {string} data.firstName - User's first name (if applicable)
+   * @param {string} data.lastName - User's last name (if applicable)
+   * @returns {Promise<void>}
+   */
   const onSubmit = async (data) => {
     try {
       setIsSubmitting(true);
       setError("");
+      setLoginCredentials(data);
 
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/person/create-account`,
@@ -39,31 +71,25 @@ export default function CreateAccount() {
     }
   };
 
-  if (success) {
-    return (
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 text-center">
-        <div className="mb-4">
-          <svg
-            className="mx-auto h-12 w-12 text-green-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 13l4 4L19 7"
-            ></path>
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          {dict.create_account.success.title}
-        </h2>
-        <p className="text-gray-600">{dict.create_account.success.message}</p>
-      </div>
-    );
-  }
+  /**
+   * Effect hook to automatically log in user after successful account creation.
+   *
+   * @effect
+   * @dependency {boolean} success - Triggers when account creation is successful
+   */
+  useEffect(() => {
+    if (success) {
+      login(loginCredentials.email, loginCredentials.password);
+    }
+  }, [success]);
+
+  // Reusable classnames to reduce repetition
+  const labelClass = "block text-sm font-medium text-gray-700 mb-1";
+  const getInputClass = (error) =>
+    `w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
+      error ? "border-red-500" : "border-gray-300"
+    }`;
+  const errorClass = "mt-1 text-sm text-red-600";
 
   return (
     <div className="w-full mx-auto max-w-2xl bg-white rounded-lg shadow-lg p-8">
@@ -85,10 +111,7 @@ export default function CreateAccount() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* First Name */}
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="name" className={labelClass}>
             {dict.create_account.fields.first_name}
           </label>
           <input
@@ -97,21 +120,14 @@ export default function CreateAccount() {
             type="text"
             placeholder={dict.create_account.placeholders.first_name}
             disabled={isSubmitting}
-            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-              errors.name ? "border-red-500" : "border-gray-300"
-            }`}
+            className={getInputClass(errors.name)}
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-          )}
+          {errors.name && <p className={errorClass}>{errors.name.message}</p>}
         </div>
 
         {/* Last Name */}
         <div>
-          <label
-            htmlFor="surname"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="surname" className={labelClass}>
             {dict.create_account.fields.last_name}
           </label>
           <input
@@ -120,23 +136,16 @@ export default function CreateAccount() {
             type="text"
             placeholder={dict.create_account.placeholders.last_name}
             disabled={isSubmitting}
-            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-              errors.surname ? "border-red-500" : "border-gray-300"
-            }`}
+            className={getInputClass(errors.surname)}
           />
           {errors.surname && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.surname.message}
-            </p>
+            <p className={errorClass}>{errors.surname.message}</p>
           )}
         </div>
 
         {/* Personal Number */}
         <div>
-          <label
-            htmlFor="pnr"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="pnr" className={labelClass}>
             {dict.create_account.fields.personal_number}
           </label>
           <input
@@ -145,21 +154,14 @@ export default function CreateAccount() {
             type="text"
             placeholder={dict.create_account.placeholders.personal_number}
             disabled={isSubmitting}
-            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-              errors.pnr ? "border-red-500" : "border-gray-300"
-            }`}
+            className={getInputClass(errors.pnr)}
           />
-          {errors.pnr && (
-            <p className="mt-1 text-sm text-red-600">{errors.pnr.message}</p>
-          )}
+          {errors.pnr && <p className={errorClass}>{errors.pnr.message}</p>}
         </div>
 
         {/* Email */}
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="email" className={labelClass}>
             {dict.create_account.fields.email}
           </label>
           <input
@@ -168,21 +170,14 @@ export default function CreateAccount() {
             type="email"
             placeholder={dict.create_account.placeholders.email}
             disabled={isSubmitting}
-            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            }`}
+            className={getInputClass(errors.email)}
           />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-          )}
+          {errors.email && <p className={errorClass}>{errors.email.message}</p>}
         </div>
 
         {/* Password */}
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
+          <label htmlFor="password" className={labelClass}>
             {dict.create_account.fields.password}
           </label>
           <input
@@ -191,26 +186,23 @@ export default function CreateAccount() {
             type="password"
             placeholder={dict.create_account.placeholders.password}
             disabled={isSubmitting}
-            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            }`}
+            className={getInputClass(errors.password)}
           />
           {errors.password && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.password.message}
-            </p>
+            <p className={errorClass}>{errors.password.message}</p>
           )}
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          variant="primary"
+          className="w-full font-medium"
         >
           {isSubmitting
             ? dict.create_account.button.loading
             : dict.create_account.button.submit}
-        </button>
+        </Button>
       </form>
     </div>
   );

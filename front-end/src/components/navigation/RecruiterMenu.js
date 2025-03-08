@@ -4,6 +4,21 @@ import Button from "@/components/ui/Button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useUser } from "@/contexts/UserContext";
 
+/**
+ * RecruiterMenu component that displays navigation options for authenticated recruiter users.
+ * 
+ * This client-side component renders in the navigation bar when a user with recruiter role
+ * is logged in. It provides:
+ * - A personalized welcome message with the user's name
+ * - A link to the user's profile page
+ * - A special link to the admin area (styled distinctively)
+ * - A logout button to end the user session
+ * 
+ * The component handles localization for all text elements and link paths.
+ * 
+ * @component
+ * @returns {JSX.Element} The rendered RecruiterMenu component with profile, admin area links and logout button
+ */
 export default function RecruiterMenu() {
   const { dict, lang } = useLanguage();
   const { user, logout } = useUser();
