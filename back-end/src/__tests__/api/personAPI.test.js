@@ -26,7 +26,7 @@ AuthHandler.mockImplementation(() => ({
         req.decoded = { id: 1, email: "john.doe@example.com" };
         next();
     }),
-    authorizePersonRequest: jest.fn(() => (req, res, next) => {
+    authorizeRecruiter: jest.fn(() => (req, res, next) => {
         next();
     }),
     extractUserData: jest.fn((person) => ({ id: person.id, email: person.email })),
@@ -270,7 +270,7 @@ describe("PersonApi", () => {
             const tempAuthMock = new AuthHandler();
             const tempPersonApi = new PersonApi(logger);
             tempAuthMock.authenticateUser.mockImplementation((req, res, next) => {next()});
-            tempAuthMock.authorizePersonRequest.mockImplementation((controller) => {
+            tempAuthMock.authorizeRecruiter.mockImplementation((controller) => {
                 return (req, res, next) => next(GenericAppError.createUnauthorizedError());
             });
             tempControllerMock.getPersonData.mockRejectedValue(GenericAppError.createInternalServerError());

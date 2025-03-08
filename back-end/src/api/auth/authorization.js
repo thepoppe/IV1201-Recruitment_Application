@@ -64,36 +64,6 @@ class AuthHandler{
         }
     }
 
-
-    /**
-     * Middleware function that authorizes the user for person requests
-     * If the requested person's id does not match the id in the decoded token,
-     * it checks if the user has the 'recruiter' role.
-     * @param {Object} controller - The controller object
-     * @param {Object} req.params.id - The id of the requested person data
-     * @param {Object} req.decoded.id - The id in the decoded token
-     * @returns {Function} - The middleware function to check if a user is authorized
-     * @throws {GenericAppError} - If the user is not authorized
-     * @throws {GenericAppError} - If there is an error in the authorization process
-     */
-    // TODO: we can remove this
-    authorizePersonRequest(controller) {
-        return async (req, res, next) => {
-            if (String(req.params.id) !== String(req.decoded.id)) {
-                try {
-                    const role = await controller.getUserRole(req.decoded.id);
-                    if (role !== 'recruiter') {
-                        return next(GenericAppError.createUnauthorizedError(`User[${req.decoded.id}, ${role}] tried accessing user [${req.params.id}]`));
-                    }
-                } 
-                catch (error) {
-                    return next(GenericAppError.createInternalServerError("Authorization error", error));
-                }
-            }
-            return next();
-        };
-    }
-
     /**
      * Middleware function that authorizes the user for recruiter requests
      * Checks if the user has the 'recruiter' role.

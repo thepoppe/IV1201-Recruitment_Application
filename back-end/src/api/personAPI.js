@@ -102,7 +102,7 @@ class PersonApi extends RequestHandler {
       "/id/:id",
       validateGetUser,
       this.auth.authenticateUser.bind(this.auth),
-      this.auth.authorizePersonRequest(this.controller),
+      this.auth.authorizeRecruiter(this.controller),
       async (req, res, next) => {
         try {
           const person = await this.controller.getPersonData(req.params.id);
