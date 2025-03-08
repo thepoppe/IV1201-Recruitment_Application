@@ -2,11 +2,14 @@ export default {
   // Navigation
   navigation: {
     logo: "Amusement Park",
-    login: "Login",
-    logout: "Logout",
-    create_account: "Create Account",
     welcome: "Welcome",
     profile: "Profile",
+    apply_for_position: "Apply for a Position",
+    view_application: "View Application",
+    admin_area: "Admin Area",
+    logout: "Logout",
+    login: "Login",
+    create_account: "Create Account",
   },
 
   // Home Page
@@ -109,5 +112,78 @@ export default {
       required: "Password is required",
       min: "Password must be at least 8 characters",
     },
+  },
+
+  // Profile Page
+  profile: {
+    loading: "Loading user data...",
+    application: "Your Job Application",
+    status: "Status",
+    submitted_on: "Submitted on",
+    competences: "Competences",
+    availability: "Availability",
+    pnr: "PNR",
+    years: "years",
+  },
+
+  // Apply Job Page
+  applyJob: {
+    title: "Apply for a Job",
+    subtitle:
+      "Fill in your competences and availability to submit your application.",
+    button: {
+      submit: "Submit Application",
+      loading: "Submitting...",
+    },
+    success: "Your job application has been submitted successfully!",
+    error: "Something went wrong. Please try again later.",
+    fields: {
+      competences: "Your Competences",
+      availability: "Your Availability",
+    },
+    placeholders: {
+      select_competence: "Select a competence",
+      years_experience: "Years of experience",
+    },
+    buttons: {
+      add_competence: "Add Competence",
+      add_availability: "Add Availability",
+      remove: "Remove",
+    },
+    validation: {
+      competence_id: "Competence ID must be a valid number",
+      competence_required: "At least one competence is required",
+      years_experience: "Years of experience must be a number",
+      years_experience_min: "Years of experience cannot be negative",
+      years_experience_max: "Years of experience cannot exceed 50 years",
+      from_date: "From date must be a valid date",
+      from_date_required: "From date is required",
+      to_date: "To date must be a valid date",
+      to_date_required: "To date is required",
+      to_date_greater: "To date must be later than From date",
+    },
+    applied: "You have already applied for a job.",
+  },
+
+  // Admin Page
+  admin: {
+    title: "Admin - Job Applications",
+    loading: "Loading applications...",
+    error_fetching: "Failed to fetch applications.",
+    id: "ID",
+    applicant: "Applicant",
+    email: "Email",
+    competences: "Competences (years)",
+    availability: "Availability",
+    status: "Status",
+    actions: "Actions",
+    years: "years",
+    view_details: "View Details",
+    no_applications: "No applications found.",
+    application_details: "Details for Application",
+    error_fetching_application: "Failed to fetch application.",
+    accept: "Accept",
+    reject: "Reject",
+    error_updating_status: "Failed to update status.",
   },
 };

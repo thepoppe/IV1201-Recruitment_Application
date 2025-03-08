@@ -1,7 +1,7 @@
 const {DataTypes, Model} = require('sequelize');
+const Role = require('./roleModel');
 const db = require("../config/database");
 const bcrypt = require("bcrypt");
-const sequelize = db.getSequelize();
 
 /**
  * Person Model for the database
@@ -69,7 +69,7 @@ Person.init(
     },
   },
   {
-    sequelize,
+    sequelize: db.getSequelize(),
     modelName: 'Person',
     tableName: "person",
     timestamps: false,
@@ -81,7 +81,6 @@ Person.init(
        * @param {Person} person - The person object
        */
       beforeCreate: async (person) => {
-        person.role_id = 2;
         person.username = person.name + person.surname;
         if (person.password) {
           person.password = await bcrypt.hash(person.password, 10);
@@ -95,7 +94,6 @@ Person.init(
        * @param {Person} person - The person object
        */
       beforeUpdate: async (person) => {
-        person.role_id = 2;
         person.username = person.name + person.surname;
         if (person.changed("password")) {
           person.password = await bcrypt.hash(person.password, 10);
@@ -104,5 +102,8 @@ Person.init(
     },
   }
 );
+
+// Association between Person and Role
+Person.belongsTo(Role, { foreignKey: "role_id", as: "role" });
 
 module.exports = Person;
