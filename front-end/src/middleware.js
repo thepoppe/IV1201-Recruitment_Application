@@ -51,10 +51,6 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("token")?.value;
 
-  console.log("Middleware Triggered");
-  console.log("Pathname:", pathname);
-  console.log("Token Exists:", token);
-
   // Ensure pathname includes a locale
   const pathnameHasLocale = locales.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -63,7 +59,6 @@ export async function middleware(request) {
   if (!pathnameHasLocale) {
     const locale = getLocale(request);
     request.nextUrl.pathname = `/${locale}${pathname}`;
-    console.log("Redirecting to locale:", request.nextUrl.pathname);
     return NextResponse.redirect(request.nextUrl);
   }
 
@@ -74,7 +69,6 @@ export async function middleware(request) {
     !token &&
     protectedRoutes.some((route) => pathname === `/${currentLocale}${route}`)
   ) {
-    console.log("Unauthorized: Redirecting to login");
     return NextResponse.redirect(
       new URL(`/${currentLocale}/login`, request.url)
     );
@@ -85,7 +79,6 @@ export async function middleware(request) {
     token &&
     authRoutes.some((route) => pathname === `/${currentLocale}${route}`)
   ) {
-    console.log("Already logged in: Redirecting to profile");
     return NextResponse.redirect(
       new URL(`/${currentLocale}/profile`, request.url)
     );
@@ -103,7 +96,6 @@ export async function middleware(request) {
       const user = response.data.data;
 
       if (user.role.name !== "recruiter") {
-        console.log(`Access Denied: User[${user.id}, ${user.role.name}] tried to access /admin`);
         return NextResponse.redirect(new URL("/", request.url)); // Redirect unauthorized users
       }
     } catch (error) {
