@@ -45,6 +45,17 @@ const applyForJobSchema = Joi.object({
     }),
 });
 
+const updateStatusSchema = Joi.object({
+  status: Joi.string()
+    .valid("accepted", "rejected")
+    .required()
+    .messages({
+      "any.required": "Status is required.",
+      "string.base": "Status must be a string.",
+      "any.only": "Invalid status. Allowed values: accepted, rejected.",
+    }),
+});
+
 const validateApplyForJob = (req, res, next) => {
   const { error } = applyForJobSchema.validate(req.body, { abortEarly: true });
   if (error) {
@@ -58,6 +69,20 @@ const validateApplyForJob = (req, res, next) => {
   next();
 };
 
+const validateUpdateStatus = (req, res, next) => {
+  const { error } = updateStatusSchema.validate(req.body, { abortEarly: true });
+  if (error) {
+    return next(
+      GenericAppError.createValidationError(
+        `Validation error: ${error.details.map((detail) => detail.message)}`,
+        error
+      )
+    );
+  }
+  next();
+}
+
 module.exports = {
   validateApplyForJob,
+  validateUpdateStatus,
 };
