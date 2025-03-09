@@ -23,6 +23,8 @@ export default function AdminPage() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sortField, setSortField] = useState('application_id');
+  const [sortDirection, setSortDirection] = useState('asc');
 
   /**
    * Effect hook that handles authorization and fetches application data.
@@ -71,6 +73,83 @@ export default function AdminPage() {
     fetchApplications();
   }, [user, token, router]);
 
+  /**
+   * Handles sorting when a column header is clicked
+   * 
+   * @function handleSort
+   * @param {string} field - The field to sort by
+   */
+  const handleSort = (field) => {
+    // If clicking the same field, toggle direction
+    if (field === sortField) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // New field, default to ascending
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  /**
+   * Returns applications sorted by the current sort field and direction
+   * 
+   * @function getSortedApplications
+   * @returns {Array} Sorted array of applications
+   */
+  const getSortedApplications = () => {
+    return [...applications].sort((a, b) => {
+      let valueA, valueB;
+      
+      // Extract the values based on the sort field
+      switch (sortField) {
+        case 'application_id':
+          valueA = a.application_id;
+          valueB = b.application_id;
+          break;
+        case 'name':
+          valueA = `${a.applicant.name} ${a.applicant.surname}`;
+          valueB = `${b.applicant.name} ${b.applicant.surname}`;
+          break;
+        case 'email':
+          valueA = a.applicant.email;
+          valueB = b.applicant.email;
+          break;
+        case 'status':
+          valueA = a.status;
+          valueB = b.status;
+          break;
+        default:
+          valueA = a[sortField];
+          valueB = b[sortField];
+      }
+      
+      // Handle string comparison
+      if (typeof valueA === 'string') {
+        valueA = valueA.toLowerCase();
+        valueB = valueB.toLowerCase();
+      }
+      
+      // Apply sort direction
+      return sortDirection === 'asc' 
+        ? (valueA > valueB ? 1 : valueA < valueB ? -1 : 0)
+        : (valueA < valueB ? 1 : valueA > valueB ? -1 : 0);
+    });
+  };
+
+  /**
+   * Renders sorting indicator next to column header
+   * 
+   * @function renderSortIndicator
+   * @param {string} field - The field to check
+   * @returns {string} The sort indicator arrow
+   */
+  const renderSortIndicator = (field) => {
+    if (sortField === field) {
+      return sortDirection === 'asc' ? ' ↑' : ' ↓';
+    }
+    return '';
+  };
+
   if (loading) return <p className="text-center mt-10">{dict.admin.loading}</p>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
@@ -80,18 +159,38 @@ export default function AdminPage() {
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
-            <th className="border px-4 py-2">{dict.admin.id}</th>
-            <th className="border px-4 py-2">{dict.admin.applicant}</th>
-            <th className="border px-4 py-2">{dict.admin.email}</th>
+            <th 
+              className="border px-4 py-2 cursor-pointer hover:bg-gray-300"
+              onClick={() => handleSort('application_id')}
+            >
+              {dict.admin.id}{renderSortIndicator('application_id')}
+            </th>
+            <th 
+              className="border px-4 py-2 cursor-pointer hover:bg-gray-300"
+              onClick={() => handleSort('name')}
+            >
+              {dict.admin.applicant}{renderSortIndicator('name')}
+            </th>
+            <th 
+              className="border px-4 py-2 cursor-pointer hover:bg-gray-300"
+              onClick={() => handleSort('email')}
+            >
+              {dict.admin.email}{renderSortIndicator('email')}
+            </th>
             <th className="border px-4 py-2">{dict.admin.competences}</th>
             <th className="border px-4 py-2">{dict.admin.availability}</th>
-            <th className="border px-4 py-2">{dict.admin.status}</th>
+            <th 
+              className="border px-4 py-2 cursor-pointer hover:bg-gray-300"
+              onClick={() => handleSort('status')}
+            >
+              {dict.admin.status}{renderSortIndicator('status')}
+            </th>
             <th className="border px-4 py-2">{dict.admin.actions}</th>
           </tr>
         </thead>
         <tbody>
-          {applications.length > 0 ? (
-            applications.map((app) => (
+          {getSortedApplications().length > 0 ? (
+            getSortedApplications().map((app) => (
               <tr key={app.application_id} className="hover:bg-gray-100">
                 {/* Application id */}
                 <td className="border px-4 py-2">{app.application_id}</td>
@@ -135,7 +234,7 @@ export default function AdminPage() {
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center py-4 text-gray-500">
+              <td colSpan="7" className="text-center py-4 text-gray-500">
                 {dict.admin.no_applications}
               </td>
             </tr>
