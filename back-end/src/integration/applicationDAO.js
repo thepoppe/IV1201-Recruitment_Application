@@ -35,10 +35,12 @@ class ApplicationDAO extends BaseDAO {
         {
           person_id,
           competences: competences.map((comp) => ({
+            person_id,
             competence_id: comp.competence_id,
             years_of_experience: comp.years_of_experience,
           })),
           availability: availabilities.map((avail) => ({
+            person_id,
             from_date: avail.from_date,
             to_date: avail.to_date,
           })),
