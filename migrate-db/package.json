@@ -1,0 +1,23 @@
+{
+  "name": "db-migration-script",
+  "version": "1.0.0",
+  "description": "Script to migrate PostgreSQL data to Heroku databases",
+  "main": "migrate.js",
+  "scripts": {
+    "migrate:staging": "node migrate.js staging",
+    "migrate:production": "node migrate.js production",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "postgresql",
+    "migration",
+    "heroku",
+    "database"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "pg": "^8.10.0"
+  }
+}
