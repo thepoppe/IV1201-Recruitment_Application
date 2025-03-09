@@ -50,25 +50,6 @@ class PersonApi extends RequestHandler {
     );
 
     /**
-     * async function that finds all persons
-     * @param {Object} req - The request object
-     * @param {Object} res - The response object
-     * @param {Function} next - The next function
-     */
-
-    this.router.get("/all", 
-      async (req, res, next) => {
-      try { 
-        const persons = await this.controller.findAllPersons();
-        this.logSuccess(`All users from the database returned`);
-        this.sendSuccess(res, 200, persons);
-      } 
-      catch (error) {
-        next(error);
-      }
-    });
-
-    /**
      * async function to login a person
      * @param {Object} req - The request object
      * @param {Object} res - The response object
@@ -102,7 +83,7 @@ class PersonApi extends RequestHandler {
       "/id/:id",
       validateGetUser,
       this.auth.authenticateUser.bind(this.auth),
-      this.auth.authorizePersonRequest(this.controller),
+      this.auth.authorizeRecruiter(this.controller),
       async (req, res, next) => {
         try {
           const person = await this.controller.getPersonData(req.params.id);

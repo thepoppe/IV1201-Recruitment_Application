@@ -34,10 +34,10 @@ describe("GenericAppError", () => {
     });
 
     test("should create an unauthorized error", () => {
-        const error = GenericAppError.createUnauthorizedError();
+        const error = GenericAppError.createAuthorizationError();
         expect(error).toBeInstanceOf(GenericAppError);
         expect(error.message).toBe("Unauthorized access");
-        expect(error.status).toBe(401);
+        expect(error.status).toBe(403);
         expect(error.userMessage).toBe("You are not authorized to perform this action.");
     });
 
