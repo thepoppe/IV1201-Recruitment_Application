@@ -59,11 +59,13 @@ export default {
       required: "First name is required",
       min: "First name must be at least 2 characters",
       max: "First name cannot exceed 50 characters",
+      pattern: "First name must contain only letters",
     },
     surname: {
       required: "Last name is required",
       min: "Last name must be at least 2 characters",
       max: "Last name cannot exceed 50 characters",
+      pattern: "Last name must contain only letters",
     },
     pnr: {
       required: "Personal number is required",
