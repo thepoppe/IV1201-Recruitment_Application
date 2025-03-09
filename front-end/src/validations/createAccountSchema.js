@@ -21,15 +21,17 @@ import Joi from "joi";
  */
 export const createAccountSchema = (dict) =>
   Joi.object({
-    name: Joi.string().required().min(2).max(50).messages({
+    name: Joi.string().required().min(2).max(50).pattern(/^[a-zA-Z]+$/).messages({
       "string.empty": dict.createAccountValidation.name.required,
       "string.min": dict.createAccountValidation.name.min,
       "string.max": dict.createAccountValidation.name.max,
+      "string.pattern.base": dict.createAccountValidation.name.pattern,
     }),
-    surname: Joi.string().required().min(2).max(50).messages({
+    surname: Joi.string().required().min(2).max(50).pattern(/^[a-zA-Z]+$/).messages({
       "string.empty": dict.createAccountValidation.surname.required,
       "string.min": dict.createAccountValidation.surname.min,
       "string.max": dict.createAccountValidation.surname.max,
+      "string.pattern.base": dict.createAccountValidation.surname.pattern,
     }),
     pnr: Joi.string()
       .required()

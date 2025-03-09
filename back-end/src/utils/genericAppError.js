@@ -45,10 +45,10 @@ class GenericAppError extends Error {
 
     /**
      * Used for authprization failures (unauthorized access)
-     * @returns {GenericAppError} - 401 Unauthorized
+     * @returns {GenericAppError} - 403 Forbidden
      */
-    static createUnauthorizedError(message = "Unauthorized access", error = null, userMessage = "You are not authorized to perform this action.") {
-        return new GenericAppError(message, 401, error, userMessage);
+    static createAuthorizationError(message = "Unauthorized access", error = null, userMessage = "You are not authorized to perform this action.") {
+        return new GenericAppError(message, 403, error, userMessage);
     }
     /**
      * Used for authentication failures

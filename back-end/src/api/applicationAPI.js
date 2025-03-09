@@ -3,8 +3,8 @@ const Controller = require("../controller/controller");
 const { validateApplyForJob, validateUpdateStatus } = require("../utils/applicationValidator");
 
 class ApplicationAPI extends RequestHandler {
-  constructor() {
-    super("/application");
+  constructor(logger) {
+    super("/application", logger);
     this.controller = new Controller();
   }
 
@@ -20,7 +20,7 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.post(
       "/apply",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       validateApplyForJob,
       async (req, res, next) => {
         try {
@@ -30,8 +30,10 @@ class ApplicationAPI extends RequestHandler {
             competences,
             availabilities
           );
+          this.logSuccess(`User ${req.decoded.id} successfully created an application`);
           this.sendSuccess(res, 201, application);
         } catch (error) {
+          
           next(error);
         }
       }
@@ -46,10 +48,11 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/competences",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       async (req, res, next) => {
         try {
           const competences = await this.controller.listAllCompetences();
+          this.logSuccess(`User ${req.decoded.id} successfully retrieved the competences`);
           this.sendSuccess(res, 200, competences);
         } catch (error) {
           next(error);
@@ -66,12 +69,13 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/my-application",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       async (req, res, next) => {
         try {
           const application = await this.controller.getUserApplication(
             req.decoded.id
           );
+          this.logSuccess(`User ${req.decoded.id} successfully retrieved their application`);
           this.sendSuccess(res, 200, application);
         } catch (error) {
           next(error);
@@ -88,11 +92,12 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/all",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       this.auth.authorizeRecruiter(this.controller), // Only recruiters can access
       async (req, res, next) => {
         try {
           const applications = await this.controller.getAllApplications();
+          this.logSuccess(`User ${req.decoded.id} successfully retrieved all applications`);
           this.sendSuccess(res, 200, applications);
         } catch (error) {
           next(error);
@@ -110,11 +115,12 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/:id",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       this.auth.authorizeRecruiter(this.controller), // Restrict to recruiters
       async (req, res, next) => {
         try {
           const application = await this.controller.getApplicationById(req.params.id);
+          this.logSuccess(`User ${req.decoded.id} successfully retrieved application: ${req.params.id}`);
           this.sendSuccess(res, 200, application);
         } catch (error) {
           next(error);
@@ -134,12 +140,13 @@ class ApplicationAPI extends RequestHandler {
     this.router.patch(
       "/:id/status",
       validateUpdateStatus,
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       this.auth.authorizeRecruiter(this.controller), // Restrict to recruiters
       async (req, res, next) => {
         try {
           const { status } = req.body;
           const updatedApplication = await this.controller.updateApplicationStatus(req.params.id, status);
+          this.logSuccess(`User ${req.decoded.id} successfully update the status of application:${req.params.id} to ${status}`);
           this.sendSuccess(res, 200, updatedApplication);
         } catch (error) {
           next(error);

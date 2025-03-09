@@ -453,7 +453,7 @@ describe("applicationApi", () => {
         }))
         newAuthMock.authorizeRecruiter.mockImplementation(() => {
             return (req, res, next) => {
-                const err = GenericAppError.createUnauthorizedError();
+                const err = GenericAppError.createAuthorizationError();
                 next(err);
             };
         });
@@ -468,13 +468,13 @@ describe("applicationApi", () => {
         
         newApp.use(newErrorHandler.handleError);
 
-        const errorMsg = GenericAppError.createUnauthorizedError().userMessage
+        const errorMsg = GenericAppError.createAuthorizationError().userMessage
        
        describe("getAllApplications", () => {
-           test("should return 401 if user is not a recruiter", async () => {
+           test("should return 403 if user is not a recruiter", async () => {
                 const response = await request(newApp)
                 .get("/api/application/all")
-                .expect(401);
+                .expect(403);
                     
                 expect(response.body).toEqual({ success: false, error:errorMsg });
                 expect(newControllerMock.getAllApplications).not.toHaveBeenCalled();
@@ -482,11 +482,11 @@ describe("applicationApi", () => {
         });
 
         describe("getApplicationById", () => {
-            test("should return 401 if user is not a recruiter", async () => {
+            test("should return 403 if user is not a recruiter", async () => {
 
                 const response = await request(newApp)
                     .get("/api/application/1")
-                    .expect(401);
+                    .expect(403);
 
                 expect(response.body).toEqual({ success: false, error:errorMsg });
                 expect(newControllerMock.getApplicationById).not.toHaveBeenCalled();
@@ -495,12 +495,12 @@ describe("applicationApi", () => {
         })
 
         describe("updateApplicationStatus", () => {
-            test("should return 401 if user is not a recruiter", async () => {
+            test("should return 403 if user is not a recruiter", async () => {
 
                 const response = await request(newApp)
                     .patch("/api/application/1/status")
                     .send({ status: "accepted" })
-                    .expect(401);
+                    .expect(403);
 
                 expect(response.body).toEqual({ success: false, error:errorMsg });
                 expect(newControllerMock.updateApplicationStatus).not.toHaveBeenCalled();

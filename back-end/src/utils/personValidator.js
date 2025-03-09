@@ -2,16 +2,28 @@ const Joi = require("joi");
 const GenericAppError = require("./genericAppError")
 
 const createAccountSchema = Joi.object({
-  name: Joi.string().required().min(2).max(50).messages({
-    "string.empty": "First name is required",
-    "string.min": "First name must be at least 2 characters",
-    "string.max": "First name cannot exceed 50 characters",
-  }),
-  surname: Joi.string().required().min(2).max(50).messages({
-    "string.empty": "Last name is required",
-    "string.min": "Last name must be at least 2 characters",
-    "string.max": "Last name cannot exceed 50 characters",
-  }),
+  name: Joi.string()
+    .required()
+    .min(2)
+    .max(50)
+    .pattern(/^[a-zA-Z]+$/)
+    .messages({
+      "string.empty": "First name is required",
+      "string.min": "First name must be at least 2 characters",
+      "string.max": "First name cannot exceed 50 characters",
+      "string.pattern.base": "First name must contain only letters",
+    }),
+  surname: Joi.string()
+    .required()
+    .min(2)
+    .max(50)
+    .pattern(/^[a-zA-Z]+$/)
+    .messages({
+      "string.empty": "Last name is required",
+      "string.min": "Last name must be at least 2 characters",
+      "string.max": "Last name cannot exceed 50 characters",
+      "string.pattern.base": "Last name must contain only letters",
+    }),
   pnr: Joi.string()
     .required()
     .pattern(/^\d{8}-\d{4}$/)

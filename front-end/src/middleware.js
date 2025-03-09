@@ -11,7 +11,7 @@ import axios from "axios";
  */
 const locales = ["en", "sv"];
 const defaultLocale = "en";
-const protectedRoutes = ["/profile", "/apply"];
+const protectedRoutes = ["/profile", "/apply", "/admin"];
 const authRoutes = ["/login", "/create-account"];
 const recruiterRoutes = ["/admin"];
 
@@ -132,5 +132,7 @@ export const config = {
     "/en/apply",
     "/sv/apply",
     "/admin/:path*",
+    "/en/admin/:path*",
+    "/sv/admin/:path*",
   ],
 };
