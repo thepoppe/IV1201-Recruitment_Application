@@ -117,3 +117,8 @@ docker compose up --build --watch
 
 ## Migrate data from old database to new database
 - Instructions on how to migrate from the old database using `dump.sql` are provided in the README file within the `migrate-db` directory.
+
+---
+
+## Developing a Mobile Application
+- It is really easy to develop a mobile application using our easy-to-use API for the Amusement Park back-end application. Documentation will be provided for the developed routes and how to use them.
