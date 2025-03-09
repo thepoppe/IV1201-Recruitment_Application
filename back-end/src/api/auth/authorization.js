@@ -43,7 +43,7 @@ class AuthHandler{
      * @returns {void} Calls next() if authentication is successful
      * @throws {GenericAppError} - If the token is not provided, expired or invalid
      */
-    async authenticateUser(req, res, next){
+    authenticateUser = async (req, res, next) => {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
             return next(GenericAppError.createAuthenticationError("Token not provided in Authorization header"));

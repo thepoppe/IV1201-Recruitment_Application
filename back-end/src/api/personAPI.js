@@ -82,7 +82,7 @@ class PersonApi extends RequestHandler {
     this.router.get(
       "/id/:id",
       validateGetUser,
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       this.auth.authorizeRecruiter(this.controller),
       async (req, res, next) => {
         try {
@@ -106,7 +106,7 @@ class PersonApi extends RequestHandler {
      */
     this.router.get(
       "/me",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       async (req, res, next) => {
         try {
           const person = await this.controller.getPersonData(req.decoded.id);

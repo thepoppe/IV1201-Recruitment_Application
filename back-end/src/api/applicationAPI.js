@@ -20,7 +20,7 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.post(
       "/apply",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       validateApplyForJob,
       async (req, res, next) => {
         try {
@@ -48,7 +48,7 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/competences",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       async (req, res, next) => {
         try {
           const competences = await this.controller.listAllCompetences();
@@ -69,7 +69,7 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/my-application",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       async (req, res, next) => {
         try {
           const application = await this.controller.getUserApplication(
@@ -92,7 +92,7 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/all",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       this.auth.authorizeRecruiter(this.controller), // Only recruiters can access
       async (req, res, next) => {
         try {
@@ -115,7 +115,7 @@ class ApplicationAPI extends RequestHandler {
      */
     this.router.get(
       "/:id",
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       this.auth.authorizeRecruiter(this.controller), // Restrict to recruiters
       async (req, res, next) => {
         try {
@@ -140,7 +140,7 @@ class ApplicationAPI extends RequestHandler {
     this.router.patch(
       "/:id/status",
       validateUpdateStatus,
-      this.auth.authenticateUser.bind(this.auth),
+      this.auth.authenticateUser,
       this.auth.authorizeRecruiter(this.controller), // Restrict to recruiters
       async (req, res, next) => {
         try {
