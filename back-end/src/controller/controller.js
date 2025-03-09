@@ -214,6 +214,7 @@ class Controller {
         availabilities
       );
     } catch (error) {
+      console.log("Error from applyForJob, for testing: ", error);
       if (error instanceof GenericAppError) throw error;
       else
         throw GenericAppError.createInternalServerError(
