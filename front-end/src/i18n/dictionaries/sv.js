@@ -59,11 +59,13 @@ export default {
       required: "Förnamn är obligatoriskt",
       min: "Förnamn måste vara minst 2 tecken",
       max: "Förnamn får inte överstiga 50 tecken",
+      pattern: "Förnamn får endast innehålla bokstäver",
     },
     surname: {
       required: "Efternamn är obligatoriskt",
       min: "Efternamn måste vara minst 2 tecken",
       max: "Efternamn får inte överstiga 50 tecken",
+      pattern: "Efternamn får endast innehålla bokstäver",
     },
     pnr: {
       required: "Personnummer är obligatoriskt",
