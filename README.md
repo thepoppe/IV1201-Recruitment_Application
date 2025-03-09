@@ -9,13 +9,13 @@ This project is a **recruitment application** with:
 - **Database**: PostgreSQL (Runs inside Docker)
 
 ## **Deployed versions**
-- Production: 
- - Front-end: **https://recruit-web-prod-9edf25da5b44.herokuapp.com/en**
- - Back-end: **https://recruit-api-prod-296be8f05b81.herokuapp.com/api**
+### Production: 
+ - Front-end: <a href="https://recruit-web-prod-9edf25da5b44.herokuapp.com/en" target="_blank">https://recruit-web-prod-9edf25da5b44.herokuapp.com/en</a>
+ - Back-end: <a href="https://recruit-api-prod-296be8f05b81.herokuapp.com/api" target="_blank">https://recruit-api-prod-296be8f05b81.herokuapp.com/api</a>
 
-- Staging:
- - Front-end: **https://recruit-web-staging-f49d79e1168e.herokuapp.com/en**
- - Back-end: **https://recruit-api-staging-1372e4e3a3b5.herokuapp.com/api**
+### Staging:
+ - Front-end: <a href="https://recruit-web-staging-f49d79e1168e.herokuapp.com/en" target="_blank">https://recruit-web-staging-f49d79e1168e.herokuapp.com/en</a>
+ - Back-end: <a href="https://recruit-api-staging-1372e4e3a3b5.herokuapp.com/api" target="_blank">https://recruit-api-staging-1372e4e3a3b5.herokuapp.com/api</a>
 
 
 ## **Prerequisites**
