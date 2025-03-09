@@ -256,7 +256,7 @@ function parsePersonData(values) {
   const processedPnr = pnr === "\\N" ? generatePnr() : pnr;
   const processedEmail =
     email === "\\N"
-      ? `${name.toLowerCase()}@${surname.toLowerCase()}.se`
+      ? `${name.toLowerCase()}.${surname.toLowerCase()}@amusementpark.com`
       : email;
 
   // Use plain text password instead of a hash - more secure as each user gets a unique password

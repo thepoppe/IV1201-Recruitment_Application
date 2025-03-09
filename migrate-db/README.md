@@ -8,7 +8,7 @@ This script migrates data from PostgreSQL dump file provided for the project to 
 - Parses SQL dump files in PostgreSQL's `COPY FROM stdin` format
 - Fills missing data in the person table according to specified rules:
   - Missing PNR: Uses "11112233-XXXX" format with incrementing numbers
-  - Missing email: Generates "name@surname.se"
+  - Missing email: Generates "name.surname@amusementpark.com"
   - Missing password: Generates a random password for each user (can be reset by user using Forgot Password in the front-end)
   - Missing role_id: Sets to 2
   - Missing username: Combines name and surname
