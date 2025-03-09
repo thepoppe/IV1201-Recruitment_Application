@@ -8,6 +8,16 @@ This project is a **recruitment application** with:
 - **Backend**: Express.js with Sequelize & PostgreSQL (Runs on `localhost:4000`)
 - **Database**: PostgreSQL (Runs inside Docker)
 
+## **Deployed versions**
+- Production: 
+ - Front-end: **https://recruit-web-prod-9edf25da5b44.herokuapp.com/en**
+ - Back-end: **https://recruit-api-prod-296be8f05b81.herokuapp.com/api**
+
+- Staging:
+ - Front-end: **https://recruit-web-staging-f49d79e1168e.herokuapp.com/en**
+ - Back-end: **https://recruit-api-staging-1372e4e3a3b5.herokuapp.com/api**
+
+
 ## **Prerequisites**
 
 Ensure you have the following installed on your system:
@@ -59,7 +69,7 @@ docker compose up --build --watch
 ## **4️⃣ Verify Everything is Running**
 
 - Open **http://localhost:3000/** → Frontend
-- Open **http://localhost:4000/test-db** → Test database connection
+- Open **http://localhost:4000/api** → Test database connection
 - Run in terminal:
   ```sh
   docker ps
@@ -101,3 +111,8 @@ Rebuild Docker Container
 docker compose down --rmi all --volumes --remove-orphans
 docker compose up --build --watch
 ```
+
+---
+
+## Migrate data from old database to new database
+- Instructions on how to migrate from the old database using `dump.sql` are provided in the README file within the `migrate-db` directory.
