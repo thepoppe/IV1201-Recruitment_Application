@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const db = require("../config/database");
 const sequelize = db.getSequelize();
-const Person = require("./personModel");
+const Person = require("./personModel")
 
 class Availability extends Model {}
 
@@ -15,10 +15,6 @@ Availability.init(
     person_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Person,
-        key: "person_id",
-      },
       onDelete: "CASCADE",
     },
     from_date: {
@@ -37,5 +33,11 @@ Availability.init(
     timestamps: false,
   }
 );
+
+Availability.belongsTo(Person, {
+  foreignKey: "person_id",
+  as: "person",
+  onDelete: "cascade"
+});
 
 module.exports = Availability;

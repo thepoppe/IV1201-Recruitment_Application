@@ -2,6 +2,11 @@ const {DataTypes, Model} = require('sequelize');
 const Role = require('./roleModel');
 const db = require("../config/database");
 const bcrypt = require("bcrypt");
+/*
+const CompetenceProfile = require('./competenceProfileModel');
+const Availability = require('./availabilityModel');
+const Application = require('./applicationModel');
+*/
 
 /**
  * Person Model for the database
@@ -105,5 +110,22 @@ Person.init(
 
 // Association between Person and Role
 Person.belongsTo(Role, { foreignKey: "role_id", as: "role" });
+/*
+Person.hasMany(CompetenceProfile, {
+  foreignKey: "person_id",
+  as: "competences",
+  onDelete: "cascade"
+});
+Person.hasMany(Availability, {
+  foreignKey: "person_id",
+  as: "availability",
+  onDelete: "cascade"
+});
 
+Person.hasOne(Application, {
+  foreignKey: "person_id",
+  as: "application",
+  onDelete: "cascade"
+})
+  */
 module.exports = Person;

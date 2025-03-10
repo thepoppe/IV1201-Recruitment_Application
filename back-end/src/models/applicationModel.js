@@ -1,7 +1,5 @@
 const { DataTypes, Model } = require("sequelize");
 const db = require("../config/database");
-const CompetenceProfile = require("./competenceProfileModel");
-const Availability = require("./availabilityModel");
 const Person = require("./personModel");
 
 const sequelize = db.getSequelize();
@@ -40,14 +38,7 @@ Application.init(
 );
 
 // Associations for Application model
-Application.belongsTo(Person, { foreignKey: "person_id", as: "person" });
-Application.hasMany(CompetenceProfile, {
-  foreignKey: "person_id",
-  as: "competences",
-});
-Application.hasMany(Availability, {
-  foreignKey: "person_id",
-  as: "availability",
-});
+Application.belongsTo(Person, { foreignKey: "person_id", as: "person", onDelete: "cascade" });
+
 
 module.exports = Application;

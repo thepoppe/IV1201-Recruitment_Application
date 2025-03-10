@@ -31,30 +31,36 @@ class ApplicationDAO extends BaseDAO {
     const transaction = await db.getSequelize().transaction();
 
     try {
+      // 1) create the application
       const application = await Application.create(
-        {
-          person_id,
-          competences: competences.map((comp) => ({
+        { person_id },
+        { transaction }
+      );
+    
+      // 2) create competence profiles for that same person
+      for (const comp of competences) {
+        await CompetenceProfile.create(
+          {
             person_id,
             competence_id: comp.competence_id,
             years_of_experience: comp.years_of_experience,
-          })),
-          availability: availabilities.map((avail) => ({
+          },
+          { transaction }
+        );
+      }
+    
+      // 3) create availability intervals for that same person
+      for (const avail of availabilities) {
+        await Availability.create(
+          {
             person_id,
             from_date: avail.from_date,
             to_date: avail.to_date,
-          })),
-        },
-        {
-          include: [
-            { model: CompetenceProfile, as: "competences" },
-            { model: Availability, as: "availability" },
-          ],
-          transaction,
-        }
-      );
-
-      // Commit transaction
+          },
+          { transaction }
+        );
+      }
+    
       await transaction.commit();
       return application;
     } catch (error) {
@@ -71,26 +77,35 @@ class ApplicationDAO extends BaseDAO {
   async findApplicationByPersonId(person_id) {
     return await this.model.findOne({
       where: { person_id },
+      // Only Person is directly associated with Application
       include: [
         {
           model: Person,
           as: "person",
           attributes: ["name", "surname", "email"],
-        },
-        {
-          model: CompetenceProfile,
-          as: "competences",
+          // NEST the child's includes here, under the Person
           include: [
-            { model: Competence, as: "competence", attributes: ["name"] },
+            {
+              model: CompetenceProfile,
+              as: "competences",
+              include: [
+                {
+                  model: Competence,
+                  as: "competence",
+                  attributes: ["name"],
+                },
+              ],
+            },
+            {
+              model: Availability,
+              as: "availability",
+            },
           ],
-        },
-        {
-          model: Availability,
-          as: "availability",
         },
       ],
     });
   }
+  
 
   /**
    * Fetch all applications
@@ -115,10 +130,31 @@ class ApplicationDAO extends BaseDAO {
     return await this.model.findOne({
       where: { application_id },
       include: [
-        { model: Person, as: "person", attributes: ["name", "surname", "email"] },
-        { model: CompetenceProfile, as: "competences", include: [{ model: Competence, as: "competence", attributes: ["name"] }] },
-        { model: Availability, as: "availability" }
-      ],
+        {
+          model: Person,
+          as: "person",
+          attributes: ["name", "surname", "email"],
+          // NEST the other includes inside Person
+          include: [
+            {
+              model: CompetenceProfile,
+              as: "competences",
+              // If you also want the "Competence" name:
+              include: [
+                {
+                  model: Competence,
+                  as: "competence",
+                  attributes: ["name"]
+                }
+              ]
+            },
+            {
+              model: Availability,
+              as: "availability"
+            }
+          ]
+        }
+      ]
     });
   }
 

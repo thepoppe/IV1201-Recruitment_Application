@@ -1,6 +1,7 @@
 const { DataTypes, Model } = require("sequelize");
 const db = require("../config/database");
 const Competence = require("./competenceModel");
+const Person = require("./personModel")
 
 const sequelize = db.getSequelize();
 
@@ -37,6 +38,13 @@ CompetenceProfile.init(
 CompetenceProfile.belongsTo(Competence, {
   foreignKey: "competence_id",
   as: "competence",
+  onDelete: "cascade"
 });
+CompetenceProfile.belongsTo(Person, {
+  foreignKey: "person_id",
+  as: "person",
+  onDelete: "cascade"
+});
+
 
 module.exports = CompetenceProfile;
