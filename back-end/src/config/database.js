@@ -80,8 +80,8 @@ class Database {
       try {
         await this.sequelize.authenticate();
         console.log("Database connection has been established successfully.");
-        
-        await loadAndSyncModels();
+
+        await this.loadAndSyncModels();
         this.initialized = true;
       } catch (error) {
         console.error("Unable to connect to the database:", error);
