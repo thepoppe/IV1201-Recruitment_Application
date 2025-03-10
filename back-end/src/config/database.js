@@ -57,19 +57,24 @@ class Database {
 
   async loadAndSyncModels(){
     const Person = require("../models/personModel.js");
+    const Role = require("../models/roleModel");
     const Competence = require("../models/competenceModel");
     const CompetenceProfile = require("../models/competenceProfileModel");
     const Availability = require("../models/availabilityModel.js");
-    const Role = require("../models/roleModel");
     const Application = require("../models/applicationModel");
 
     await this.sequelize.sync({alter: true});
-
-    await Role.create({role_id: 1, name: "recruiter"});
-    await Role.create({role_id: 2, name: "applicant"});
-    await Competence.create({competence_id: 1, name: "Ticket Sales"})
-    await Competence.create({competence_id: 2, name: "Lotteries"})
-    await Competence.create({competence_id: 3, name: "Rollercoaster"})
+    try {
+      await Role.create({role_id: 1, name: "recruiter"});
+      await Role.create({role_id: 2, name: "applicant"});
+      await Competence.create({competence_id: 1, name: "Ticket Sales"})
+      await Competence.create({competence_id: 2, name: "Lotteries"})
+      await Competence.create({competence_id: 3, name: "Rollercoaster"})
+      await Person.create({name: "one", surname: "test", pnr: "00000000-0001", email:"1@test.se", password:"Password1"})
+      await Person.create({name: "two", surname: "test", pnr: "00000000-0002", email:"2@test.se", password:"Password1"})
+      
+    } catch (error) {
+    }
   }
 
   /**
@@ -80,7 +85,7 @@ class Database {
       try {
         await this.sequelize.authenticate();
         console.log("Database connection has been established successfully.");
-
+        //await this.sequelize.drop();
         await this.loadAndSyncModels();
         this.initialized = true;
       } catch (error) {
