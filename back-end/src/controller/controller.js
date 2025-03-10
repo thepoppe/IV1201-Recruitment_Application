@@ -57,7 +57,6 @@ class Controller {
       const user = await this.personDAO.create(person);
       return new PersonDTO(user);
     } catch (error) {
-      console.log("Error from createAccount, for testing: ", error);
       if (error instanceof GenericAppError) throw error;
       else
         throw GenericAppError.createInternalServerError(
@@ -214,7 +213,6 @@ class Controller {
         availabilities
       );
     } catch (error) {
-      console.log("Error from applyForJob, for testing: ", error);
       if (error instanceof GenericAppError) throw error;
       else
         throw GenericAppError.createInternalServerError(

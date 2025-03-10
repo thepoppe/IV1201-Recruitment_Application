@@ -4,7 +4,6 @@ This script migrates data from PostgreSQL dump file provided for the project to 
 
 ## Features
 
-- Creates complete database schema with all required tables
 - Parses SQL dump files in PostgreSQL's `COPY FROM stdin` format
 - Fills missing data in the person table according to specified rules:
   - Missing PNR: Uses "11112233-XXXX" format with incrementing numbers
@@ -82,6 +81,3 @@ Importing competence profile data...
 Migration to production completed successfully!
 Migration completed successfully
 ```
-
-## ⚠️ WARNING:
--  This script COMPLETELY WIPES YOUR DATABASE before importing data. It drops all existing tables and recreates them from scratch. Make sure to back up any important data before running this script.
