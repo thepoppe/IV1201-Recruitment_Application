@@ -24,12 +24,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: ./back-end/package-lock.json
           
-      - name: Set up Node.js for frontend
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22.x'
-          cache: 'npm'
-          cache-dependency-path: ./front-end/package-lock.json  
       
       # Backend tests
       - name: Install backend dependencies

@@ -63,7 +63,8 @@ class Database {
       try {
         await this.sequelize.authenticate();
         console.log("Database connection has been established successfully.");
-        await this.sequelize.sync();
+
+        await this.sequelize.sync({alter: true});
         this.initialized = true;
       } catch (error) {
         console.error("Unable to connect to the database:", error);
