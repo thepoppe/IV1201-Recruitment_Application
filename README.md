@@ -45,6 +45,9 @@ DB_USER=user
 DB_PASSWORD=password
 DB_NAME=recruitment
 DB_PORT=5432
+
+JWT_SECRET=jwt_secret
+JWT_EXPIRES_IN=1h
 ```
 
 ---
@@ -115,5 +118,49 @@ docker compose up --build --watch
 
 ---
 
+## Running Unit Tests for the Backend
+
+To run unit tests for the backend locally, follow these steps:
+
+### 1. Install dependencies (if not already installed)
+```sh
+cd back-end
+npm i
+```
+### 2. Running Test Locally
+- Run all tests concurrently (default):
+```sh
+npm test
+```
+- Run all tests sequentially (used in CI/CD):
+```sh
+npm run test:ci
+```
+- Run a specific test file (useful for debugging):
+```sh
+npm test -- /src/__tests__/folder/testfile
+```
+
+### Environment & Database setup
+- The application uses a local .env file, so ensure it exists.
+- The test suite automatically sets up an in-memory SQLite database using databaseMock. No manual setup is required.
+- Each test mocks the layer below it, and middleware is also mocked if needed, except for server.test.js, which tests full use cases.
+
+### CI/CD Testing
+- In the CI pipeline, tests run using:
+```sh
+npm run test:ci
+```
+- This ensures sequential execution, reducing potential conflicts in test environments.
+- The CI/CD workflow defines required environment variables (e.g., JWT_SECRET and JWT_EXPIRES_IN) directly in the YAML configuration.
+
+
+---
+
 ## Migrate data from old database to new database
 - Instructions on how to migrate from the old database using `dump.sql` are provided in the README file within the `migrate-db` directory.
+
+---
+
+## Developing a Mobile Application
+- It is really easy to develop a mobile application using our easy-to-use API for the Amusement Park back-end application. Documentation will be provided for the developed routes and how to use them.

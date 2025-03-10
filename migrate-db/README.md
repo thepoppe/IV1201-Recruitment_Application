@@ -68,8 +68,6 @@ Output after successfull data migraion:
 ```bash
 $ node migrate.js production
 Starting migration to production environment
-Creating database schema in production environment...
-Schema created successfully
 Parsing dump file: ../dump.sql
 Parsed data summary:
 - Person records: 900
@@ -81,7 +79,6 @@ Generating 15 sample applications...
 Selected 15 applicants for applications
 Importing availability data...
 Importing competence profile data...
-Resetting sequences...
 Migration to production completed successfully!
 Migration completed successfully
 ```
