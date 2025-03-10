@@ -55,6 +55,23 @@ class Database {
     return Database.instance;
   }
 
+  async loadAndSyncModels(){
+    const Person = require("../models/personModel.js");
+    const Competence = require("../models/competenceModel");
+    const CompetenceProfile = require("../models/competenceProfileModel");
+    const Availability = require("../models/availabilityModel.js");
+    const Role = require("../models/roleModel");
+    const Application = require("../models/applicationModel");
+
+    await this.sequelize.sync({alter: true});
+
+    await Role.create({role_id: 1, name: "recruiter"});
+    await Role.create({role_id: 2, name: "applicant"});
+    await Competence.create({competence_id: 1, name: "Ticket Sales"})
+    await Competence.create({competence_id: 2, name: "Lotteries"})
+    await Competence.create({competence_id: 3, name: "Rollercoaster"})
+  }
+
   /**
    * Initialize the database connection
    */
@@ -63,8 +80,8 @@ class Database {
       try {
         await this.sequelize.authenticate();
         console.log("Database connection has been established successfully.");
-
-        await this.sequelize.sync({alter: true});
+        
+        await loadAndSyncModels();
         this.initialized = true;
       } catch (error) {
         console.error("Unable to connect to the database:", error);
